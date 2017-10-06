@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+
+import filelock
+import glob
+import os
+import subprocess
+import difflib
+import time
+import sys
+
+SCRIPT_START_TIME=time.time()
+
+def runTests(tests):
+    for test in tests:
+        ret = 0
+        exe = os.path.dirname(test)
+        with open("output/%s.out"%(test),"w") as out:
+            print("Running test %s... "%(test),end="",flush=True)
+            try:
+                ret = subprocess.call(["./"+exe,"validationSettings/%s.cfg"%(test)],shell=False,stdout=out,stderr=subprocess.STDOUT)
+            except KeyboardInterrupt:
+                out.write("Keyboard interrupt")
+                ret = 1
+        if ret != 0:
+            print("failed")
+            print("[Error] Test %s returned with exit code %i"%(test,ret))
+            print("[Error] Captured output:")
+            with open("output/%s.out"%(test),"r") as out:
+                print(out.read())
+            return ret
+        else:
+            print("done")
+    return 0
+
+def compareOutput(knownGood,toTest):
+    if not os.path.isfile(toTest):
+        print("failed")
+        print("[Error] Could not find %s"%(toTest))
+        return False
+    if os.path.getmtime(toTest) - SCRIPT_START_TIME < 0:
+        print("failed")
+        print("[Error] %s has not been modified during this test"%(toTest))
+        return False
+
+    ret = 1
+    with open("output/%s.diff"%(os.path.basename(toTest)),"w") as out:
+        # Ignore version string in diff
+        ret = subprocess.call(["diff", '-I', '^# version:.*',knownGood,toTest],stdout=out,stderr=subprocess.STDOUT)
+    if ret != 0:
+        print("failed")
+        print("[Error] Diff produces the following output for %s"%(toTest))
+        print("[Error] Captured output:")
+        with open("output/%s.diff"%(os.path.basename(toTest)),"r") as out:
+            print(out.read())
+        return False
+
+    return True
+
+def checkOutputs(tests):
+    allCorrect = True
+    for test in tests:
+        print("Validating results of test %s... "%(test),end="",flush=True)
+        goodOutputFiles = sorted(glob.glob("validationOutput/%s_*.dat"%(test)))
+        testCorrect = True
+        for gof in goodOutputFiles:
+            tof = gof.replace("validationOutput","output")
+            testCorrect = testCorrect and compareOutput(gof,tof)
+
+        if not goodOutputFiles:
+            print("No output files found. Skipping... ")
+        elif testCorrect:
+            print("done")
+        else:
+            allCorrect = False
+    return allCorrect
+        
+
+def main():
+    tests = []
+    for path, subdirs, files in os.walk("validationSettings"):
+        for name in files:
+            tests.append(os.path.join(path,name))
+    tests = [ os.path.splitext(os.path.relpath(test,"validationSettings"))[0] for test in tests]
+
+    runTests(tests)
+
+    if checkOutputs(tests):
+        print("*** No errors detected")
+        return True
+    else:
+        print("[Error] Some tests didn't pass")
+        return False
+
+
+if __name__=="__main__":
+    lock = filelock.FileLock("regressionTest.lock")
+    with lock:
+        success = main()
+
+    if success:
+        sys.exit(0)
+    else:
+        sys.exit(1)
+
