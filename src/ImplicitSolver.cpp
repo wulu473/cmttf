@@ -7,9 +7,9 @@
 #include "System.hpp"
 #include "NewtonRaphson.hpp"
 
-std::string ImplicitSolver::name() const
+std::string ImplicitSolver::moduleName() const
 {
-  return "TimeIntegrator.ImplicitSolver";
+  return "ImplicitSolver";
 }
 
 void ImplicitSolver::initialise(const real alpha)

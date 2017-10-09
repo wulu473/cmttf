@@ -10,7 +10,7 @@ class Gnuplot : public Output
 {
   REGISTER(Gnuplot);
   public:
-    virtual std::string name() const;
+    virtual std::string moduleName() const;
     Gnuplot();
     virtual ~Gnuplot();
 

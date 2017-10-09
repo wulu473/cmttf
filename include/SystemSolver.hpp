@@ -9,7 +9,7 @@
 class SystemSolver : public ParameterisedModuleBase
 {
   public:
-    virtual std::string name() const;
+    virtual std::string baseName() const final;
     SystemSolver();
     virtual ~SystemSolver();
 

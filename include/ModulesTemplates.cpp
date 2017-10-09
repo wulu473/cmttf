@@ -40,7 +40,7 @@ std::shared_ptr<const T> Modules::module()
   std::list<std::shared_ptr<const T> > mods = modules<T>();
   if(mods.size()>1)
   {
-    BOOST_LOG_TRIVIAL(error) << "Multiple active modules of " << mods.front()->moduleName() << " found.";
+    BOOST_LOG_TRIVIAL(error) << "Multiple active modules of " << mods.front()->baseName() << " found.";
     exit(3);
     return NULL;
   }
@@ -58,13 +58,13 @@ std::shared_ptr<const T> Modules::uniqueModule()
   std::list<std::shared_ptr<const T> > mods = modules<T>();
   if(mods.size()>1)
   {
-    BOOST_LOG_TRIVIAL(error) << "Multiple active modules of type " << mods.front()->moduleName() << " found.";
+    BOOST_LOG_TRIVIAL(error) << "Multiple active modules of type " << mods.front()->baseName() << " found.";
     exit(3);
     return NULL;
   }
   else if(mods.size() == 0)
   {
-    BOOST_LOG_TRIVIAL(error) << "No active modules of type " << std::make_shared<T>()->moduleName() << " found.";
+    BOOST_LOG_TRIVIAL(error) << "No active modules of type " << std::make_shared<T>()->baseName() << " found.";
     exit(3);
     return NULL;
   }

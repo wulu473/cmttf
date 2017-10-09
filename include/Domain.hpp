@@ -8,7 +8,8 @@
 class Domain : public ParameterisedModuleBase
 {
   public:
-    virtual std::string name() const;
+    virtual std::string baseName() const final;
+
     virtual void initialise();
 
     virtual real x(const int) const ;

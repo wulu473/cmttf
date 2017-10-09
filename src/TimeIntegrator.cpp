@@ -1,7 +1,7 @@
 
 #include "TimeIntegrator.hpp"
 
-std::string TimeIntegrator::name() const
+std::string TimeIntegrator::baseName() const
 {
   return "TimeIntegrator";
 }

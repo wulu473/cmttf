@@ -11,7 +11,7 @@ Domain::~Domain()
 {
 }
 
-std::string Domain::name() const
+std::string Domain::baseName() const
 {
   return "Domain";
 }

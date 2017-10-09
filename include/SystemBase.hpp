@@ -7,7 +7,7 @@
 class SystemBase : public ParameterisedModuleBase
 {
   public:
-    virtual std::string name() const;
+    virtual std::string baseName() const final;
     virtual int stencilSize() const;
 };
 

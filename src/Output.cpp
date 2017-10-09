@@ -1,7 +1,7 @@
 
 #include "Output.hpp"
 
-std::string Output::name() const
+std::string Output::baseName() const
 {
   return "Output";
 }

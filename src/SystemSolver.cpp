@@ -11,7 +11,7 @@ SystemSolver::~SystemSolver()
 
 }
 
-std::string SystemSolver::name() const
+std::string SystemSolver::baseName() const
 {
   return "Solver";
 }

@@ -16,9 +16,12 @@ class InheritanceException : public std::exception
 class ModuleBase
 {
   public:
-    virtual std::string name() const;
-    std::string moduleName() const;
+    virtual std::string name() const final;
     virtual ~ModuleBase();
+    virtual std::string baseName() const;
+    virtual std::string moduleName() const;
+
+  protected:
 };
 
 /**

@@ -20,9 +20,9 @@ Gnuplot::~Gnuplot()
 
 }
 
-std::string Gnuplot::name() const
+std::string Gnuplot::moduleName() const
 {
-  return "Output.Gnuplot";
+  return "Gnuplot";
 }
 
 void Gnuplot::initialise(const std::string filename, const real interval,

@@ -16,9 +16,9 @@ Flat::~Flat()
 
 }
 
-std::string Flat::name() const
+std::string Flat::moduleName() const
 {
-  return "Domain.Flat";
+  return "Flat";
 }
 
 /**

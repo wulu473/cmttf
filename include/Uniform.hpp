@@ -8,7 +8,7 @@ class Uniform : public InitialCondition
 {
   REGISTER(Uniform);
   public:
-    virtual std::string name() const;
+    virtual std::string moduleName() const;
     Uniform();
     virtual ~Uniform();
 
@@ -16,6 +16,7 @@ class Uniform : public InitialCondition
 
     virtual void initialise(const State& state);
     virtual void initialiseFromFile();
+  protected:
   private:
     State m_state;
 };

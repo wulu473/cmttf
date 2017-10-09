@@ -4,7 +4,7 @@
 
 #include "SystemAttributes.hpp"
 
-std::string SystemBase::name() const
+std::string SystemBase::baseName() const
 {
   return "System";
 }

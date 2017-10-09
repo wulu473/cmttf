@@ -8,9 +8,9 @@ class Flat : public Domain
 {
   REGISTER(Flat);
   public:
+    virtual std::string moduleName() const;
     Flat();
     virtual ~Flat();
-    virtual std::string name() const;
 
     virtual real x(const int) const;
     virtual real dx() const;
@@ -22,6 +22,7 @@ class Flat : public Domain
 
     virtual void initialiseFromFile();
     void initialise(const int N, const real L, const real R);
+  protected:
   private:
     int m_iL, m_iR, m_N;;
     real m_xL, m_xR, m_dx;

@@ -7,7 +7,7 @@
 class TimeIntegrator : public ParameterisedModuleBase
 {
   public:
-    virtual std::string name() const;
+    virtual std::string baseName() const final;
     virtual void initialise(); 
 
     void advance(std::shared_ptr<DataPatch> states, const real dt, const real t) const;

@@ -13,9 +13,9 @@ Uniform::~Uniform()
 
 }
 
-std::string Uniform::name() const
+std::string Uniform::moduleName() const
 {
-  return "InitialCondition.Uniform";
+  return "Uniform";
 }
 
 void Uniform::setData(std::shared_ptr<DataPatch> data) const

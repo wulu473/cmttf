@@ -10,7 +10,8 @@
 class ImplicitSolver : public TimeIntegrator
 {
   public:
-    virtual std::string name() const;
+    virtual std::string moduleName() const;
+
     virtual void initialise(const real alpha); 
 
     typedef Eigen::Matrix<real,Eigen::Dynamic,1> Vector;
@@ -21,6 +22,8 @@ class ImplicitSolver : public TimeIntegrator
     void jacobian(const Vector& states, const real dt, const real t, SpMatRowMaj& J) const;
 
     void advance(std::shared_ptr<DataPatch> states, const real dt, const real t) const;
+
+  protected:
 };
 
 #endif

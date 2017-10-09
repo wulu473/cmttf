@@ -1,7 +1,7 @@
 
 #include "InitialCondition.hpp"
 
-std::string InitialCondition::name() const
+std::string InitialCondition::baseName() const
 {
   return "InitialCondition";
 }

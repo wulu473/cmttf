@@ -4,7 +4,20 @@
 
 std::string ModuleBase::name() const
 {
-  return "";
+  std::string base = this->baseName();
+  std::string module = this->moduleName();
+  if (base.compare("") == 0)
+  {
+    return module;
+  }
+  else if (module.compare("") == 0)
+  {
+    return base;
+  }
+  else
+  {
+    return this->baseName() + "." + this->moduleName();
+  }
 }
 
 ModuleBase::~ModuleBase()
@@ -18,20 +31,12 @@ void ParameterisedModuleBase::initialiseFromFile()
   throw InheritanceException();
 }
 
-/** Extract the name of the child module
-*/
+std::string ModuleBase::baseName() const
+{
+  return "";
+}
 std::string ModuleBase::moduleName() const
 {
-  std::string fullName = name();
-  std::size_t pos = fullName.find_last_of(".");
-  if (pos == std::string::npos)
-  {
-    pos = 0;
-  }
-  else 
-  {
-    pos++; // move to the right otherwise we include the '.'
-  }
-  return fullName.substr(pos);
+  return "";
 }
 

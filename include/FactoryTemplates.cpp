@@ -18,7 +18,7 @@ std::shared_ptr<T> Factory::create(const std::string& classname)
   }
   if(t->moduleName() != classname)
   {
-    BOOST_LOG_TRIVIAL(error)  << "Mismatch of identifiers while creating class. Name method of created class returns " << t->name() << ", however identifier of class is " << classname << ". Make sure the identifier given in the header of file of the class under the 'REGISTER' macro matches the name method.";
+    BOOST_LOG_TRIVIAL(error)  << "Mismatch of identifiers while creating class. Name method of created class returns " << t->moduleName() << ", however identifier of class is " << classname << ". Make sure the identifier given in the header of file of the class under the 'REGISTER' macro matches the name method.";
     exit(2);
   }
 

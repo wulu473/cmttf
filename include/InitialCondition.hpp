@@ -8,12 +8,14 @@
 class InitialCondition : public ParameterisedModuleBase
 {
   public:
-    virtual std::string name() const;
+    virtual std::string baseName() const final;
 
     InitialCondition();
     virtual ~InitialCondition();
 
     virtual void setData(std::shared_ptr<DataPatch>) const;
+
+  protected:
 };
 
 #endif
