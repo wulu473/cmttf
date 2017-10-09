@@ -17,7 +17,7 @@ def runTests(tests):
         with open("output/%s.out"%(test),"w") as out:
             print("Running test %s... "%(test),end="",flush=True)
             try:
-                ret = subprocess.call(["./"+exe,"validationSettings/%s.cfg"%(test)],shell=False,stdout=out,stderr=subprocess.STDOUT)
+                ret = subprocess.call(["./"+exe,"validationSettings/%s.cfg"%(test)],shell=False,stdout=out,stderr=subprocess.STDOUT, timeout=1800)
             except KeyboardInterrupt:
                 out.write("Keyboard interrupt")
                 ret = 1
