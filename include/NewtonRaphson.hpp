@@ -1,26 +1,21 @@
 
-#ifndef NEWTONRAPHSON
-#define NEWTONRAPHSON
-#include <Eigen/Sparse>
+#ifndef NEWTONRAPHSON_H_
+#define NEWTONRAPHSON_H_
 
-#include "Attributes.hpp"
+#include "RootFinder.hpp"
 
-class ConvergenceException : public std::exception
+class NewtonRaphson : public RootFinder
 {
-
-};
-
-
-class NewtonRaphson
-{
+  REGISTER(NewtonRaphson)
   public:
-    NewtonRaphson() {};
+    virtual std::string moduleName() const;
+    NewtonRaphson() {}
+    virtual ~NewtonRaphson() {}
 
-    typedef Eigen::SparseMatrix<real,Eigen::RowMajor> ESpMatRowMaj;
-    typedef Eigen::Matrix<real,Eigen::Dynamic,1> EVector;
-
-    void solveSparse(const std::function<void(const EVector&, EVector&)>& f, 
+    virtual void solveSparse(const std::function<void(const EVector&, EVector&)>& f, 
         const std::function<void(const EVector&, ESpMatRowMaj&)>& J, EVector& x) const;
+
+  protected:
 };
 
 #endif

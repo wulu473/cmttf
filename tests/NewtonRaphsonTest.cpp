@@ -5,6 +5,7 @@
 #include "NewtonRaphson.hpp"
 
 
+BOOST_AUTO_TEST_SUITE(NewtonRaphsonTests)
 
 void f(const NewtonRaphson::EVector& x, NewtonRaphson::EVector& f)
 {
@@ -33,7 +34,6 @@ void J(const NewtonRaphson::EVector& x, NewtonRaphson::ESpMatRowMaj& J)
 }
 
 
-BOOST_AUTO_TEST_SUITE(NewtonRaphsonTests)
 
 BOOST_AUTO_TEST_CASE(test1)
 {

@@ -5,7 +5,7 @@
 
 #include "Modules.hpp"
 #include "System.hpp"
-#include "NewtonRaphson.hpp"
+#include "RootFinder.hpp"
 
 std::string ImplicitSolver::moduleName() const
 {
@@ -195,6 +195,9 @@ void ImplicitSolver::jacobian(const Vector& states, const real dt, const real t,
 void ImplicitSolver::advance(std::shared_ptr<DataPatch> states, const real dt, const real t) const
 {
   BOOST_LOG_TRIVIAL(debug) << "ImplicitSolver: Advancing data patch by dt = " << dt << ", t = " << t;
+
+  static const std::shared_ptr<const RootFinder> solver = Modules::uniqueModule<RootFinder>();
+
   // IMPROVE this by using Eigen::map and not copy all the states
   const unsigned int statS = SystemAttributes::stateSize;
   Vector states_vec_new(states->rows()*statS);
@@ -215,7 +218,6 @@ void ImplicitSolver::advance(std::shared_ptr<DataPatch> states, const real dt, c
   auto J = std::bind(&ImplicitSolver::jacobian,*this,std::placeholders::_1,dt,t,std::placeholders::_2);
 
   // Solve system
-  std::shared_ptr<NewtonRaphson> solver = std::make_shared<NewtonRaphson>();
   solver->solveSparse(f,J,states_vec_new);
 
   // Copy states_vec_new to states

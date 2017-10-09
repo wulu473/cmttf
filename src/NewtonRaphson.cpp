@@ -11,6 +11,13 @@
 #include <helper_functions.h>
 #include <helper_cuda.h>
 
+REGISTERIMPL(NewtonRaphson);
+
+std::string NewtonRaphson::moduleName() const
+{
+  return "NewtonRaphson";
+}
+
 /**
  * x [in,out] Guess and result
  */
