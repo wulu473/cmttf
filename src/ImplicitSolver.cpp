@@ -203,31 +203,58 @@ void ImplicitSolver::advance(std::shared_ptr<DataPatch> states, const real dt, c
   Vector states_vec_new(states->rows()*statS);
   Vector states_vec_old(states->rows()*statS);
 
-  // Copy states to states_vec_old
-  for(unsigned int i=0;i<states->rows();i++)
+  real c_t = 0.;
+  real c_dt = dt;
+  do
   {
-    for(unsigned int j=0;j<statS;j++)
+    c_dt = std::min(dt - c_t, c_dt); 
+
+    // Copy states to states_vec_old
+    for(unsigned int i=0;i<states->rows();i++)
     {
-      states_vec_old[i*statS+j] = (*states)(i,j);
-      states_vec_new[i*statS+j] = (*states)(i,j);
+      for(unsigned int j=0;j<statS;j++)
+      {
+        states_vec_old[i*statS+j] = (*states)(i,j);
+        states_vec_new[i*statS+j] = (*states)(i,j);
+      }
     }
-  }
 
-  // f and J should have the signature NetwonRaphson's solveSparse accepts
-  auto f = std::bind(&ImplicitSolver::function,*this,states_vec_old,std::placeholders::_1,dt,t,std::placeholders::_2);
-  auto J = std::bind(&ImplicitSolver::jacobian,*this,std::placeholders::_1,dt,t,std::placeholders::_2);
+    // f and J should have the signature NetwonRaphson's solveSparse accepts
+    auto f = std::bind(&ImplicitSolver::function,*this,states_vec_old,std::placeholders::_1,dt,t,std::placeholders::_2);
+    auto J = std::bind(&ImplicitSolver::jacobian,*this,std::placeholders::_1,dt,t,std::placeholders::_2);
 
-  // Solve system
-  solver->solveSparse(f,J,states_vec_new);
-
-  // Copy states_vec_new to states
-  for(unsigned int i=0;i<states->rows();i++)
-  {
-    for(unsigned int j=0;j<statS;j++)
+    bool converged = false;
+    try
     {
-      (*states)(i,j) = states_vec_new[i*statS+j];
+      // Solve system
+      solver->solveSparse(f,J,states_vec_new);
+      converged = true;
     }
-  }
+    catch(RootFinder::ConvergenceException e)
+    {
+      converged = false;
+    }
+
+    if (converged)
+    {
+      // Copy states_vec_new to states
+      for(unsigned int i=0;i<states->rows();i++)
+      {
+        for(unsigned int j=0;j<statS;j++)
+        {
+          (*states)(i,j) = states_vec_new[i*statS+j];
+        }
+      }
+
+      c_t += c_dt;
+    }
+    else
+    {
+      c_dt *= 0.5; 
+      BOOST_LOG_TRIVIAL(error) << "Time step did not converge. Trying smaller dt = " << c_dt;
+    }
+
+  } while (c_t < dt);
 }
 
 
