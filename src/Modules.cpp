@@ -13,7 +13,9 @@ void Modules::initialiseFromFile()
 
   for( auto moduleName : activeModuleNames)
   {
-    addModule(Factory::createInitialised<ParameterisedModuleBase>(moduleName));
+    std::shared_ptr<ModuleBase> module = Factory::createInitialised<ParameterisedModuleBase>(moduleName);
+    BOOST_LOG_TRIVIAL(debug) << "Creating " << module->name();
+    addModule(module);
   }
 
   // Initialise system

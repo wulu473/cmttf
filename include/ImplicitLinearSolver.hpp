@@ -1,30 +1,28 @@
 
-#ifndef IMPLICITSOLVER_H_
-#define IMPLICITSOLVER_H_
+#ifndef IMPLICITLINEARSOLVER_H_
+#define IMPLICITLINEARSOLVER_H_
 
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
 #include "TimeIntegrator.hpp"
 
-class ImplicitSolver : public TimeIntegrator
+class ImplicitLinearSolver : public TimeIntegrator
 {
-  REGISTER(ImplicitSolver)
+  REGISTER(ImplicitLinearSolver)
   public:
     virtual std::string moduleName() const;
 
     virtual void initialise(const real alpha); 
-
-    virtual void initialiseFromFile();
 
     typedef Eigen::Matrix<real,Eigen::Dynamic,1> Vector;
     typedef Eigen::SparseMatrix<real,Eigen::RowMajor> SpMatRowMaj;
 
     void function(const Vector& states_old, const Vector& states_new, const real dt, const real t, Vector& f) const;
 
-    void jacobian(const Vector& states, const real dt, const real t, SpMatRowMaj& J) const;
+    void jacobian(const Vector& states_old, const Vector& states_new, const real dt, const real t, SpMatRowMaj& J) const;
 
-    virtual void advance(std::shared_ptr<DataPatch> states, const real dt, const real t) const;
+    void advance(std::shared_ptr<DataPatch> states, const real dt, const real t) const;
 
   protected:
 };

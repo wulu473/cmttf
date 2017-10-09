@@ -4,7 +4,6 @@
 
 #include "ModuleBase.hpp"
 #include "DataPatch.hpp"
-#include "ImplicitSolver.hpp"
 
 class SystemSolver : public ParameterisedModuleBase
 {
@@ -27,8 +26,6 @@ class SystemSolver : public ParameterisedModuleBase
   private:
     real m_finalT;
     real m_maxDt;
-
-    std::shared_ptr<ImplicitSolver> m_implicitSolver;
 };
 
 #endif

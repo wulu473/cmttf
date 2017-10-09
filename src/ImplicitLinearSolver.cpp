@@ -1,29 +1,22 @@
 
 
-#include "ImplicitSolver.hpp"
+#include "ImplicitLinearSolver.hpp"
 #include "Domain.hpp"
 
 #include "Modules.hpp"
 #include "System.hpp"
 #include "RootFinder.hpp"
 
-REGISTERIMPL(ImplicitSolver);
+REGISTERIMPL(ImplicitLinearSolver);
 
-std::string ImplicitSolver::moduleName() const
+std::string ImplicitLinearSolver::moduleName() const
 {
-  return "ImplicitSolver";
+  return "ImplicitLinearSolver";
 }
 
-void ImplicitSolver::initialise(const real alpha)
+void ImplicitLinearSolver::initialise(const real alpha)
 {
   m_alpha = alpha;
-}
-
-void ImplicitSolver::initialiseFromFile()
-{
-  this->initialise(
-      getParameter<real>("alpha",0.5)
-  );
 }
 
 
@@ -36,7 +29,7 @@ void ImplicitSolver::initialiseFromFile()
  * states_new [in] Concatenated array of states  t^n+1
  * f [out] Array which should be 0
  */
-void ImplicitSolver::function(const Vector& states_old, const Vector& states_new, const real dt, const real t, Vector& f) const
+void ImplicitLinearSolver::function(const Vector& states_old, const Vector& states_new, const real dt, const real t, Vector& f) const
 {
   static const std::shared_ptr<const System> system = Modules::uniqueModule<System>();
   static const std::shared_ptr<const Domain> domain = Modules::uniqueModule<Domain>();
@@ -88,7 +81,7 @@ void ImplicitSolver::function(const Vector& states_old, const Vector& states_new
       }
     }
     const State F_old = system->F(stencil_old,dx,x,t);
-    const State F_new = system->F(stencil_new,dx,x,t);
+    const State F_new = system->FLinear(stencil_new,stencil_old,dx,x,t);
     
 
     for(unsigned int e=0;e<SystemAttributes::stateSize;e++)
@@ -98,7 +91,7 @@ void ImplicitSolver::function(const Vector& states_old, const Vector& states_new
   }
 }
 
-void ImplicitSolver::jacobian(const Vector& states, const real dt, const real t, SpMatRowMaj& J) const
+void ImplicitLinearSolver::jacobian(const Vector& states_old, const Vector& states_new, const real dt, const real t, SpMatRowMaj& J) const
 {
   const int stenS = SystemAttributes::stencilSize;
   const int statS = SystemAttributes::stateSize;
@@ -108,7 +101,7 @@ void ImplicitSolver::jacobian(const Vector& states, const real dt, const real t,
 
   assert((unsigned int)(J.rows()) == domain->cells()*statS);
   assert((unsigned int)(J.cols()) == domain->cells()*statS);
-  assert((unsigned int)(states.size()) == domain->cells()*statS);
+  assert((unsigned int)(states_new.size()) == domain->cells()*statS);
 
   const real dx = domain->dx();
 
@@ -121,7 +114,7 @@ void ImplicitSolver::jacobian(const Vector& states, const real dt, const real t,
   {
     const real x = domain->x(cell);
 
-    StencilArray stencil;
+    StencilArray stencil_old, stencil_new;
 
 #ifdef DEBUG
     // Initialise to nan so we can be sure the stencil is set properly
@@ -129,7 +122,8 @@ void ImplicitSolver::jacobian(const Vector& states, const real dt, const real t,
     {
       for(int j=0;j<statS;j++)
       {
-        stencil[i][j] = -std::numeric_limits<real>::quiet_NaN();
+        stencil_new[i][j] = -std::numeric_limits<real>::quiet_NaN();
+        stencil_old[i][j] = -std::numeric_limits<real>::quiet_NaN();
       }
     }
 #endif
@@ -151,7 +145,8 @@ void ImplicitSolver::jacobian(const Vector& states, const real dt, const real t,
         // Make it transmissive
         for(unsigned int i_state=0;i_state<statS;i_state++)
         {
-          stencil[i_stenc][i_state] = states[(-i_stenc_cell-1)*statS+i_state];
+          stencil_new[i_stenc][i_state] = states_new[(-i_stenc_cell-1)*statS+i_state];
+          stencil_old[i_stenc][i_state] = states_old[(-i_stenc_cell-1)*statS+i_state];
         }
       }
       else if(domain->end()<=i_stenc_cell)
@@ -160,19 +155,21 @@ void ImplicitSolver::jacobian(const Vector& states, const real dt, const real t,
         // Make it transmissive
         for(unsigned int i_state=0;i_state<statS;i_state++)
         {
-          stencil[i_stenc][i_state] = states[statS*(2*domain->end()-i_stenc_cell-1)+i_state];
+          stencil_old[i_stenc][i_state] = states_old[statS*(2*domain->end()-i_stenc_cell-1)+i_state];
+          stencil_new[i_stenc][i_state] = states_new[statS*(2*domain->end()-i_stenc_cell-1)+i_state];
         }
       }
       else
       {
         for(unsigned int i_state=0;i_state<statS;i_state++)
         {
-          stencil[i_stenc][i_state] = states[statS*i_stenc_cell+i_state];
+          stencil_old[i_stenc][i_state] = states_old[statS*i_stenc_cell+i_state];
+          stencil_new[i_stenc][i_state] = states_new[statS*i_stenc_cell+i_state];
         }
       }
     }
 
-    const StencilJacobian J_loc = system->J(stencil,dx,x,t);
+    const StencilJacobian J_loc = system->JLinear(stencil_new,stencil_old,dx,x,t);
 
     // J_loc is column major so iterate over rows faster
     for(unsigned int J_loc_col=0;J_loc_col<statS*(stenS*2+1);J_loc_col++)
@@ -201,9 +198,9 @@ void ImplicitSolver::jacobian(const Vector& states, const real dt, const real t,
   J.setFromTriplets(triplets.begin(),triplets.end());
 }
 
-void ImplicitSolver::advance(std::shared_ptr<DataPatch> states, const real dt, const real t) const
+void ImplicitLinearSolver::advance(std::shared_ptr<DataPatch> states, const real dt, const real t) const
 {
-  BOOST_LOG_TRIVIAL(debug) << "ImplicitSolver: Advancing data patch by dt = " << dt << ", t = " << t;
+  BOOST_LOG_TRIVIAL(debug) << "ImplicitLinearSolver: Advancing data patch by dt = " << dt << ", t = " << t;
 
   static const std::shared_ptr<const RootFinder> solver = Modules::uniqueModule<RootFinder>();
 
@@ -212,58 +209,31 @@ void ImplicitSolver::advance(std::shared_ptr<DataPatch> states, const real dt, c
   Vector states_vec_new(states->rows()*statS);
   Vector states_vec_old(states->rows()*statS);
 
-  real c_t = 0.;
-  real c_dt = dt;
-  do
+
+  // Copy states to states_vec_old
+  for(unsigned int i=0;i<states->rows();i++)
   {
-    c_dt = std::min(dt - c_t, c_dt); 
-
-    // Copy states to states_vec_old
-    for(unsigned int i=0;i<states->rows();i++)
+    for(unsigned int j=0;j<statS;j++)
     {
-      for(unsigned int j=0;j<statS;j++)
-      {
-        states_vec_old[i*statS+j] = (*states)(i,j);
-        states_vec_new[i*statS+j] = (*states)(i,j);
-      }
+      states_vec_old[i*statS+j] = (*states)(i,j);
+      states_vec_new[i*statS+j] = (*states)(i,j);
     }
+  }
 
-    // f and J should have the signature NetwonRaphson's solveSparse accepts
-    auto f = std::bind(&ImplicitSolver::function,*this,states_vec_old,std::placeholders::_1,c_dt,t+c_t,std::placeholders::_2);
-    auto J = std::bind(&ImplicitSolver::jacobian,*this,std::placeholders::_1,c_dt,t+c_t,std::placeholders::_2);
+  // f and J should have the signature NetwonRaphson's solveSparse accepts
+  auto f = std::bind(&ImplicitLinearSolver::function,*this,states_vec_old,std::placeholders::_1,dt,t,std::placeholders::_2);
+  auto J = std::bind(&ImplicitLinearSolver::jacobian,*this,states_vec_old,std::placeholders::_1,dt,t,std::placeholders::_2);
 
-    bool converged = false;
-    try
+  // Solve system
+  solver->solveSparse(f,J,states_vec_new);
+  // Copy states_vec_new to states
+  for(unsigned int i=0;i<states->rows();i++)
+  {
+    for(unsigned int j=0;j<statS;j++)
     {
-      // Solve system
-      solver->solveSparse(f,J,states_vec_new);
-      converged = true;
+      (*states)(i,j) = states_vec_new[i*statS+j];
     }
-    catch(RootFinder::ConvergenceException e)
-    {
-      converged = false;
-    }
-
-    if (converged)
-    {
-      // Copy states_vec_new to states
-      for(unsigned int i=0;i<states->rows();i++)
-      {
-        for(unsigned int j=0;j<statS;j++)
-        {
-          (*states)(i,j) = states_vec_new[i*statS+j];
-        }
-      }
-
-      c_t += c_dt;
-    }
-    else
-    {
-      c_dt *= 0.5; 
-      BOOST_LOG_TRIVIAL(error) << "Time step did not converge. Trying smaller dt = " << c_dt;
-    }
-
-  } while (c_t < dt);
+  }
 }
 
 

@@ -12,6 +12,8 @@ objects/
 *.lock
 *.log
 .nfs*
+*.swp
+*.swo
 
 /githash.h
 /Makefile

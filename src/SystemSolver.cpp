@@ -1,5 +1,7 @@
 
 #include "SystemSolver.hpp"
+#include "Modules.hpp"
+#include "TimeIntegrator.hpp"
 
 SystemSolver::SystemSolver()
 {
@@ -20,9 +22,6 @@ void SystemSolver::initialise(const real finalT, const real maxDt)
 {
   m_finalT = finalT;
   m_maxDt = maxDt;
-
-  m_implicitSolver = std::make_shared<ImplicitSolver>();
-  m_implicitSolver->initialise(1.0);
 }
 
 void SystemSolver::initialiseFromFile()
@@ -36,7 +35,7 @@ void SystemSolver::initialiseFromFile()
 void SystemSolver::advance(std::shared_ptr<DataPatch> data, const real t, const real dt, 
                  const unsigned int i) const
 {
-  m_implicitSolver->advance(data,dt,t);
+  Modules::uniqueModule<TimeIntegrator>()->advance(data,dt,t);
 }
 
 real SystemSolver::maxDt(std::shared_ptr<DataPatch> data, const real t) const

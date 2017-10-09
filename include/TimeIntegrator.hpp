@@ -7,10 +7,12 @@
 class TimeIntegrator : public ParameterisedModuleBase
 {
   public:
+    TimeIntegrator() {};
+    ~TimeIntegrator() {};
     virtual std::string baseName() const final;
     virtual void initialise(); 
 
-    void advance(std::shared_ptr<DataPatch> states, const real dt, const real t) const;
+    virtual void advance(std::shared_ptr<DataPatch> states, const real dt, const real t) const;
 
   protected:
     // alpha = 0.5 Crank Nicolson
