@@ -140,8 +140,8 @@ void NewtonRaphson::solveSparse(const std::function<void(const EVector&, EVector
     // If < eps^2 additional steps are not going to give more accuracy
     const real dxRel2 = delta_x.squaredNorm()/x.squaredNorm();
 
-    if(   res2 < pow(std::numeric_limits<real>::epsilon(),2) || 
-        dxRel2 < pow(std::numeric_limits<real>::epsilon(),2))
+    // Should give us approx 1e-8 accuracy
+    if(   res2 < 1e-24 || dxRel2 < 1e-24)
     {
       converged = true;  
     }
