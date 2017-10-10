@@ -21,7 +21,7 @@ CXXFLAGS_DEBUG+= -Xcompiler -Wall -std=c++11 -g -Xcompiler -fopenmp -O0 -DDEBUG
 
 CUDAFLAGS+=-m64 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35 -gencode arch=compute_37,code=sm_37 -gencode arch=compute_50,code=sm_50 -gencode arch=compute_52,code=sm_52 -gencode arch=compute_60,code=sm_60 -gencode arch=compute_60,code=compute_60
 
-INCLUDES+=-I./include -I./ -I./sys/$(SYSTEM)/
+INCLUDES+=-I./include -I./ -I./sys/$(SYSTEM)/ -I./tests
 
 LDLIBS+=-lboost_unit_test_framework -lboost_log -lcublas -lcusolver -lcusparse -lboost_program_options -lconfig++
 
