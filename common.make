@@ -129,6 +129,10 @@ githash.h:
 	git rev-parse HEAD | tr -d "\n" >> $@ && \
 	printf '"\n#endif' >> $@
 
+# Compile everything
+.PHONY: all
+all: unit-tests debug default
+
 # Run all tests
 .PHONY: test
 test: unit-tests regression-tests
@@ -176,11 +180,12 @@ list:
 
 .PHONY: help
 help:
+	@echo "all              - Compile everything"
 	@echo "unit-tests       - Compile and run unit tests"
 	@echo "regression-tests - Compile and run regression tests"
 	@echo "test             - Compile and run all tests"
-	@echo "ThinFilm         - Compile program"
-	@echo "ThinFilm-debug   - Compile program (with O0 and DEBUG defined)"
+	@echo "default          - Compile program"
+	@echo "debug            - Compile program (with O0 and DEBUG defined)"
 	@echo "clean            - Remove object files"
 	@echo "distclean        - Remove all objects and dependencies"
 
