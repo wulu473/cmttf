@@ -4,10 +4,14 @@
 #include "ImplicitSolver.hpp"
 
 #include "Attributes.hpp"
-#include "System.hpp"
 #include "Modules.hpp"
 #include "Flat.hpp"
 
+#include "System.hpp"
+#ifndef ROBERTS
+#warning ImplicitSolver unit tests only work for system roberts
+#warning Skipping ImplicitSolverTest.cpp ...
+#else
 
 BOOST_AUTO_TEST_SUITE(ImplicitSolverTests)
 
@@ -153,3 +157,5 @@ BOOST_AUTO_TEST_CASE(setupJacobianRand)
   Modules::clear();
 }
 BOOST_AUTO_TEST_SUITE_END()
+
+#endif

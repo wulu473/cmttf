@@ -19,6 +19,12 @@ void ImplicitLinearSolver::initialise(const real alpha)
   m_alpha = alpha;
 }
 
+void ImplicitLinearSolver::initialiseFromFile()
+{
+  this->initialise(
+      getParameter<real>("alpha",0.5)
+  );
+}
 
 //! Function which needs to be 0
 /**

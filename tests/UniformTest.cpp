@@ -5,6 +5,12 @@
 #include "Uniform.hpp"
 #include "Attributes.hpp"
 
+#include "System.hpp"
+#ifndef ROBERTS
+#warning Uniform unit tests only work for system roberts
+#warning Skipping UniformTest.cpp ...
+#else
+
 BOOST_AUTO_TEST_SUITE(UniformTests)
 
 BOOST_AUTO_TEST_CASE(setData)
@@ -28,3 +34,4 @@ BOOST_AUTO_TEST_CASE(setData)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+#endif

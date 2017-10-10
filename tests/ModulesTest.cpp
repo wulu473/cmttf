@@ -6,6 +6,11 @@
 #include "Output.hpp"
 #include "InitialCondition.hpp"
 
+#include "System.hpp"
+#ifndef ROBERTS
+#warning All of Modules unit tests only work for system roberts
+#endif
+
 BOOST_AUTO_TEST_SUITE(ModulesTests)
 
 BOOST_AUTO_TEST_CASE(setAndGetModule)
@@ -21,6 +26,9 @@ BOOST_AUTO_TEST_CASE(setAndGetModule)
   Modules::clear();
 }
 
+#ifndef ROBERTS
+#warning Skipping initialiseFromFile test...
+#else
 BOOST_AUTO_TEST_CASE(initialiseFromFile)
 {
   Parameters::readFile("tests/ParametersTest.cfg");
@@ -37,5 +45,6 @@ BOOST_AUTO_TEST_CASE(initialiseFromFile)
 
   Modules::clear();
 }
+#endif
 
 BOOST_AUTO_TEST_SUITE_END()

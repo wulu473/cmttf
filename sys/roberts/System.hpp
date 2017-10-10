@@ -1,6 +1,7 @@
 
 #ifndef SYSTEM_H_
 #define SYSTEM_H_
+#define ROBERTS
 
 #include <vector>
 #include <Eigen/Sparse>
