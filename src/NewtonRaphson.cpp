@@ -136,6 +136,10 @@ void NewtonRaphson::solveSparse(const std::function<void(const EVector&, EVector
     fun(x,f);
     const real res2 = f.squaredNorm()/f02;
 
+#ifdef DEBUG
+    BOOST_LOG_TRIVIAL(debug) << "Iteration: " << i << " res = " << sqrt(res2);
+#endif
+
     // Check newton update
     // If < eps^2 additional steps are not going to give more accuracy
     const real dxRel2 = delta_x.squaredNorm()/x.squaredNorm();
