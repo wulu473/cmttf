@@ -16,8 +16,8 @@ ifeq ($(wildcard sys/$(SYSTEM)/.),)
 $(error $(SYSTEM) is not an available system. Should be one of: $(shell ls sys))
 endif
 
-CXXFLAGS+= -Xcompiler -Wall -std=c++11 -g -Xcompiler -fopenmp -O3
-CXXFLAGS_DEBUG+= -Xcompiler -Wall -std=c++11 -g -Xcompiler -fopenmp -O0 -DDEBUG
+CXXFLAGS+= -Xcompiler -Wall -Xcompiler -Wextra -Xcompiler -Wshadow -Xcompiler -Wpointer-arith -Xcompiler -Wcast-qual -std=c++11 -g -Xcompiler -fopenmp -O3
+CXXFLAGS_DEBUG+= -Xcompiler -Wall -Xcompiler -Wextra -Xcompiler -Wshadow -Xcompiler -Wpointer-arith -Xcompiler -Wcast-qual -std=c++11 -g -Xcompiler -fopenmp -O0 -DDEBUG
 
 CUDAFLAGS+=-m64 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35 -gencode arch=compute_37,code=sm_37 -gencode arch=compute_50,code=sm_50 -gencode arch=compute_52,code=sm_52 -gencode arch=compute_60,code=sm_60 -gencode arch=compute_60,code=compute_60
 
