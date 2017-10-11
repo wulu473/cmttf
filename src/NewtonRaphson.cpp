@@ -107,7 +107,7 @@ void NewtonRaphson::solveSparse(const std::function<void(const EVector&, EVector
     checkCudaErrors(
         cudaMemcpy(d_b, h_b, sizeof(real)*rowsA, cudaMemcpyHostToDevice));
 
-    // Solve the system  
+    // Solve the system
     checkCudaErrors(cusolverSpDcsrlsvqr(
           cusolverHandle, rowsA, nnzA,
           descrA, d_csrValA, d_csrRowPtrA, d_csrColIndA,
@@ -141,11 +141,11 @@ void NewtonRaphson::solveSparse(const std::function<void(const EVector&, EVector
     const real dxRel2 = delta_x.squaredNorm()/x.squaredNorm();
 
     // Should give us approx 1e-8 accuracy
-    if(   res2 < 1e-24 || dxRel2 < 1e-24)
+    if( res2 < 1e-24 || dxRel2 < 1e-24 )
     {
       converged = true;  
     }
-   
+
     i++;
   } while(!converged && i < maxIter);
 

@@ -128,8 +128,8 @@ void ImplicitLinearSolver::jacobian(const Vector& states_old, const Vector& stat
     {
       for(int j=0;j<statS;j++)
       {
-        stencil_new[i][j] = -std::numeric_limits<real>::quiet_NaN();
         stencil_old[i][j] = -std::numeric_limits<real>::quiet_NaN();
+        stencil_new[i][j] = -std::numeric_limits<real>::quiet_NaN();
       }
     }
 #endif
@@ -151,8 +151,8 @@ void ImplicitLinearSolver::jacobian(const Vector& states_old, const Vector& stat
         // Make it transmissive
         for(unsigned int i_state=0;i_state<statS;i_state++)
         {
-          stencil_new[i_stenc][i_state] = states_new[(-i_stenc_cell-1)*statS+i_state];
           stencil_old[i_stenc][i_state] = states_old[(-i_stenc_cell-1)*statS+i_state];
+          stencil_new[i_stenc][i_state] = states_new[(-i_stenc_cell-1)*statS+i_state];
         }
       }
       else if(domain->end()<=i_stenc_cell)

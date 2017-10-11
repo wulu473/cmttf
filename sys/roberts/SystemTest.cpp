@@ -1,7 +1,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include "System.hpp"
-#include "SystemTestUtility.hpp"
+#include "TestUtility.hpp"
 
 BOOST_AUTO_TEST_SUITE(SystemTest)
 
@@ -101,7 +101,7 @@ BOOST_AUTO_TEST_CASE(J_num)
   StencilArray u;
   u << state1,state2,state3,state4,state5;
 
-  SystemTestUtility::checkJacobianNumerically(sys,u,dx,x,t,1e-10);
+  TestUtility::SystemTest::checkJacobianNumerically(sys,u,dx,x,t,1e-10);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

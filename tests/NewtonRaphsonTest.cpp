@@ -55,4 +55,39 @@ BOOST_AUTO_TEST_CASE(test1)
   delete method;
 }
 
+BOOST_AUTO_TEST_CASE(linear)
+{
+  // Linear case
+
+  std::function<void(const NewtonRaphson::EVector&, NewtonRaphson::EVector&)> fun = 
+    [](const NewtonRaphson::EVector& x, NewtonRaphson::EVector& f)
+    {
+      f[0] = 1.2*x[0] + 0.8*x[1] - 0.2;
+      f[1] = 1.1*x[0] + 1.3*x[1] + 0.3;
+    };
+  std::function<void(const NewtonRaphson::EVector&, NewtonRaphson::ESpMatRowMaj&)> jac =
+    [](const NewtonRaphson::EVector& x, NewtonRaphson::ESpMatRowMaj& J)
+    {
+      typedef Eigen::Triplet<real> T;
+      std::vector<T> coeffs;
+      coeffs.push_back(T(0,0,1.2)); coeffs.push_back(T(0,1,0.8));
+      coeffs.push_back(T(1,0,1.1)); coeffs.push_back(T(1,1,1.3));
+      J.setFromTriplets(coeffs.begin(),coeffs.end());
+      J.makeCompressed();
+    };
+  NewtonRaphson::EVector x(2);
+
+  // Should always converge
+  x << -100, -100;
+
+  NewtonRaphson *method = new NewtonRaphson();
+
+  method->solveSparse(fun,jac,x);
+
+  BOOST_CHECK_CLOSE(x[0], 0.7352941176470589,1e-8);
+  BOOST_CHECK_CLOSE(x[1],-0.8529411764705883,1e-8);
+
+  delete method;
+}
+
 BOOST_AUTO_TEST_SUITE_END()

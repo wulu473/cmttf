@@ -11,6 +11,8 @@
 #include <vector>
 #include <iostream>
 
+#include "Log.hpp"
+
 typedef double real;
 typedef Eigen::SparseMatrix<real> SpMat;
 typedef Eigen::SparseMatrix<real,Eigen::RowMajor> SpMatRowMaj;
@@ -53,14 +55,13 @@ BOOST_AUTO_TEST_CASE(Nvidia_example_csc)
   BOOST_CHECK_EQUAL(cscRowIndA[6],2);
   BOOST_CHECK_EQUAL(cscRowIndA[7],2);
   BOOST_CHECK_EQUAL(cscRowIndA[8],3);
-//  BOOST_CHECK_EQUAL(cscRowIndA[9],0);
-#warning Figure out what the last element in cscRowIndA is
 
   BOOST_CHECK_EQUAL(cscColPtrA[0],0);
   BOOST_CHECK_EQUAL(cscColPtrA[1],2);
   BOOST_CHECK_EQUAL(cscColPtrA[2],4);
   BOOST_CHECK_EQUAL(cscColPtrA[3],6);
   BOOST_CHECK_EQUAL(cscColPtrA[4],7);
+  BOOST_CHECK_EQUAL(cscColPtrA[5],9);
 
   BOOST_CHECK_CLOSE(cscValA[0],1.0,1e-3);
   BOOST_CHECK_CLOSE(cscValA[1],5.0,1e-3);
@@ -203,10 +204,101 @@ BOOST_AUTO_TEST_CASE(QR)
   // Copy results back into b
   checkCudaErrors(cudaMemcpy(b.data(), d_x, sizeof(double)*rowsA, cudaMemcpyDeviceToHost));
 
-  BOOST_CHECK_CLOSE(b[0],-1./3.,1e-3);
-  BOOST_CHECK_CLOSE(b[1], 1./3.,1e-3);
-  BOOST_CHECK_CLOSE(b[2], 4./9.,1e-3);
-  BOOST_CHECK_CLOSE(b[3], 2./3.,1e-3);
+  BOOST_CHECK_CLOSE(b[0],-1./3.,1e-10);
+  BOOST_CHECK_CLOSE(b[1], 1./3.,1e-10);
+  BOOST_CHECK_CLOSE(b[2], 4./9.,1e-10);
+  BOOST_CHECK_CLOSE(b[3], 2./3.,1e-10);
+
+
+  if (handle) { checkCudaErrors(cusolverSpDestroy(handle)); }
+  if (descrA) { checkCudaErrors(cusparseDestroyMatDescr(descrA)); }
+  if (d_csrValA   ) { checkCudaErrors(cudaFree(d_csrValA)); }
+  if (d_csrRowPtrA) { checkCudaErrors(cudaFree(d_csrRowPtrA)); }
+  if (d_csrColIndA) { checkCudaErrors(cudaFree(d_csrColIndA)); }
+  if (d_x) { checkCudaErrors(cudaFree(d_x)); }
+  if (d_b) { checkCudaErrors(cudaFree(d_b)); }
+}
+
+BOOST_AUTO_TEST_CASE(QRDense)
+{
+  // Try a dense matrix. This may be inefficient but we want to be sure
+  // this works
+ 
+  const int colsA = 2; // number of columns of A
+  const int rowsA = colsA; // number of rows of A, needs to be square!
+
+  std::vector<T> coeffs;
+
+  coeffs.push_back(T(0,0,1.2));
+  coeffs.push_back(T(0,1,0.8));
+  coeffs.push_back(T(1,0,1.1));
+  coeffs.push_back(T(1,1,1.3));
+
+  SpMatRowMaj A(rowsA,colsA);
+  A.setFromTriplets(coeffs.begin(),coeffs.end());
+
+  A.makeCompressed();
+
+  const int nnzA  = A.nonZeros(); // number of nonzeros of A
+
+  // Set up RHS
+  Eigen::VectorXd b(rowsA); // Assuming real == double
+  b << 200.2, 239.7;
+
+  real *h_csrValA = A.valuePtr();
+  real *h_b = b.data();
+  int *h_csrColIndA = A.innerIndexPtr();
+  int *h_csrRowPtrA = A.outerIndexPtr();
+
+  // Set up CUDA
+  cusolverSpHandle_t handle = NULL;
+  cusparseMatDescr_t descrA = NULL;
+
+  checkCudaErrors(cusolverSpCreate(&handle));
+  checkCudaErrors(cusparseCreateMatDescr(&descrA));
+  checkCudaErrors(cusparseSetMatIndexBase(descrA, CUSPARSE_INDEX_BASE_ZERO));
+  
+  int *d_csrRowPtrA = NULL;
+  int *d_csrColIndA = NULL;
+  double *d_csrValA = NULL;
+  double *d_x = NULL; // x = A \ b
+  double *d_b = NULL; // a copy of h_b
+  
+  double tol = 1.e-12;
+  int reorder = 0; // no reordering
+  int singularity = 0; // -1 if A is invertible under tol.
+
+  // Prepare data on device
+  checkCudaErrors(cudaMalloc((void **)&d_csrRowPtrA, sizeof(int)*(rowsA+1)));
+  checkCudaErrors(cudaMalloc((void **)&d_csrColIndA, sizeof(int)*nnzA));
+  checkCudaErrors(cudaMalloc((void **)&d_csrValA   , sizeof(double)*nnzA));
+  checkCudaErrors(cudaMalloc((void **)&d_x, sizeof(double)*colsA));
+  checkCudaErrors(cudaMalloc((void **)&d_b, sizeof(double)*rowsA));
+
+  checkCudaErrors(
+      cudaMemcpy(d_csrRowPtrA, h_csrRowPtrA, sizeof(int)*(rowsA+1), cudaMemcpyHostToDevice));
+  checkCudaErrors(
+      cudaMemcpy(d_csrColIndA, h_csrColIndA, sizeof(int)*nnzA     , cudaMemcpyHostToDevice));
+  checkCudaErrors(
+      cudaMemcpy(d_csrValA   , h_csrValA   , sizeof(double)*nnzA  , cudaMemcpyHostToDevice));
+  checkCudaErrors(
+      cudaMemcpy(d_b, h_b, sizeof(double)*rowsA, cudaMemcpyHostToDevice));
+ 
+  // Solve the system  
+  checkCudaErrors(cusolverSpDcsrlsvqr(
+      handle, rowsA, nnzA,
+      descrA, d_csrValA, d_csrRowPtrA, d_csrColIndA,
+      d_b, tol, reorder, d_x, &singularity));
+ 
+  std::ostringstream sing_err;
+  sing_err << "WARNING: the matrix is singular at row " << singularity << "  under tol (" << tol << ")";
+  BOOST_REQUIRE_MESSAGE(0 > singularity, sing_err.str());
+
+  // Copy results back into b
+  checkCudaErrors(cudaMemcpy(b.data(), d_x, sizeof(double)*rowsA, cudaMemcpyDeviceToHost));
+
+  BOOST_CHECK_CLOSE(b[0], 100.73529411764707,1e-10);
+  BOOST_CHECK_CLOSE(b[1],  99.14705882352939,1e-10);
 
 
   if (handle) { checkCudaErrors(cusolverSpDestroy(handle)); }

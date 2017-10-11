@@ -1,10 +1,10 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "SystemTestUtility.hpp"
+#include "TestUtility.hpp"
 #include "System.hpp"
 
-bool SystemTestUtility::checkJacobianNumerically(std::shared_ptr<System> sys, const StencilArray& u,
+bool TestUtility::SystemTest::checkJacobianNumerically(std::shared_ptr<System> sys, const StencilArray& u,
     const real dx, const real x, const real t, const real eps)
 {
   const State nullState = 0.*u[0];
