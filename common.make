@@ -74,13 +74,18 @@ objects/$(SYSTEM)/tests/%.o: tests/%.cpp | object-dirs
 
 # Link unit tests and run
 .PHONY: unit-tests
-unit-tests: $(SYSTEM)-unit-tests
+unit-tests: $(SYSTEM)-unit-tests-run
 
+# Run the unit tests
+.PHONY: $(SYSTEM)-unit-tests-run
+$(SYSTEM)-unit-tests-run : $(SYSTEM)-unit-tests
+	@./$(SYSTEM)-unit-tests
+
+# Compile the unit tests
 $(SYSTEM)-unit-tests: $(TESTOBJS) $(OBJS) $(SYSOBJS) | object-dirs
 	@echo  -n "Linking $@..."
 	@$(NVCC) $(CXXFLAGS) $(CUDAFLAGS) $(TESTOBJS) $(SYSOBJS) $(filter-out objects/$(SYSTEM)/src/main.o, $(OBJS)) $(LDFLAGS) $(LDLIBS) -o $@
 	@echo " done"
-	@./$(SYSTEM)-unit-tests
 
 # Link program
 $(SYSTEM): $(OBJS) $(SYSOBJS) | object-dirs
