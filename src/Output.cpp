@@ -33,7 +33,7 @@ bool Output::needsOutput(const real t, const real dt, const unsigned int iter) c
 
 }
 
-real Output::maxDt(const real t, const real dt, const unsigned int iter) const
+real Output::maxDt(const real t, const real /*dt*/, const unsigned int /*iter*/) const
 {
   return m_tLast+m_interval-t;
 }
