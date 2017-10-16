@@ -1,7 +1,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "Modules.hpp"
+#include "ModuleList.hpp"
 #include "Flat.hpp"
 #include "Output.hpp"
 #include "InitialCondition.hpp"

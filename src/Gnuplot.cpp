@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iomanip>
 
+#include "ModuleList.hpp"
 #include "Domain.hpp"
 #include "Git.hpp"
 

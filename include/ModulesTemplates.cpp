@@ -1,6 +1,6 @@
 
 #ifndef MODULES
-#error ModulesTemplates.cpp must be included in Modules.hpp
+#error ModulesTemplates.cpp must be included in ModuleList.hpp
 #endif
 
 template<typename T>
