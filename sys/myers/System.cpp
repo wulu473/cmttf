@@ -35,11 +35,11 @@ State System::FLinear(const StencilArray& states_new, const StencilArray& states
   const real u_2_0 = states_new[2][0];
   const real u_3_0 = states_new[3][0];
   const real u_4_0 = states_new[4][0];
-  const real u0_0_0 = states_old[0][0];
+//  const real u0_0_0 = states_old[0][0];
   const real u0_1_0 = states_old[1][0];
   const real u0_2_0 = states_old[2][0];
   const real u0_3_0 = states_old[3][0];
-  const real u0_4_0 = states_old[4][0];
+//  const real u0_4_0 = states_old[4][0];
 
   State F_lin;
   F_lin[0] = -beta - 1.0L/8.0L*tau*pow(u0_1_0, 2)/(dx*mu) - 1.0L/4.0L*tau*u0_1_0*u0_2_0/(dx*mu) + (1.0L/4.0L)*tau*u0_2_0*u0_3_0/(dx*mu) + (1.0L/8.0L)*tau*pow(u0_3_0, 2)/(dx*mu) + (1.0L/24.0L)*sigma*pow(u0_1_0, 3)*u_0_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_1_0, 3)*u_1_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_1_0, 3)*u_2_0/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*pow(u0_1_0, 3)*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_1_0, 2)*u0_2_0*u_0_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*pow(u0_1_0, 2)*u0_2_0*u_1_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*pow(u0_1_0, 2)*u0_2_0*u_2_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_1_0, 2)*u0_2_0*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u0_1_0*pow(u0_2_0, 2)*u_0_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*u0_1_0*pow(u0_2_0, 2)*u_1_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*u0_1_0*pow(u0_2_0, 2)*u_2_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u0_1_0*pow(u0_2_0, 2)*u_3_0/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u0_2_0, 3)*u_0_0/(pow(dx, 4)*mu) - 1.0L/6.0L*sigma*pow(u0_2_0, 3)*u_1_0/(pow(dx, 4)*mu) + (1.0L/4.0L)*sigma*pow(u0_2_0, 3)*u_2_0/(pow(dx, 4)*mu) - 1.0L/6.0L*sigma*pow(u0_2_0, 3)*u_3_0/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u0_2_0, 3)*u_4_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_2_0, 2)*u0_3_0*u_1_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*pow(u0_2_0, 2)*u0_3_0*u_2_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*pow(u0_2_0, 2)*u0_3_0*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_2_0, 2)*u0_3_0*u_4_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u0_2_0*pow(u0_3_0, 2)*u_1_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*u0_2_0*pow(u0_3_0, 2)*u_2_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*u0_2_0*pow(u0_3_0, 2)*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u0_2_0*pow(u0_3_0, 2)*u_4_0/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*pow(u0_3_0, 3)*u_1_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_3_0, 3)*u_2_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_3_0, 3)*u_3_0/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u0_3_0, 3)*u_4_0/(pow(dx, 4)*mu);
@@ -72,19 +72,19 @@ StencilJacobian System::J(const StencilArray& states,
 /*
  */
 StencilJacobian System::JLinear(const StencilArray& /*states_new*/, const StencilArray& states_old,
-            const real dx, const real x, const real t) const
+            const real dx, const real /*x*/, const real /*t*/) const
 {
   const real sigma = m_sigma;
   const real mu = m_mu;
-  const real tau = m_tau(t,x);
+//  const real tau = m_tau(t,x);
 
   // F should be linear in states_new. J is therefore not dependent on states_new
 
-  const real u0_0_0 = states_old[0][0];
+//  const real u0_0_0 = states_old[0][0];
   const real u0_1_0 = states_old[1][0];
   const real u0_2_0 = states_old[2][0];
   const real u0_3_0 = states_old[3][0];
-  const real u0_4_0 = states_old[4][0];
+//  const real u0_4_0 = states_old[4][0];
 
   StencilJacobian J_lin;
   J_lin(0,0) = (1.0L/24.0L)*sigma*pow(u0_1_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_1_0, 2)*u0_2_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u0_1_0*pow(u0_2_0, 2)/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u0_2_0, 3)/(pow(dx, 4)*mu);

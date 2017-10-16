@@ -5,12 +5,7 @@
 
 BOOST_AUTO_TEST_SUITE(SystemTest)
 
-double r01()
-{
-  return (rand()/(double)(RAND_MAX + 1));
-}
-
-BOOST_AUTO_TEST_CASE(F)
+BOOST_AUTO_TEST_CASE(FTest)
 {
   std::shared_ptr<System> sys = std::make_shared<System>(); 
   sys->initialise(1.,1.1,1.2,111,0.12,[](real,real){return 1.23;},[](real,real){return 4.;});
@@ -31,7 +26,7 @@ BOOST_AUTO_TEST_CASE(F)
   BOOST_CHECK_CLOSE(F[1],410072066.459576,1e-5);
 }
 
-BOOST_AUTO_TEST_CASE(J)
+BOOST_AUTO_TEST_CASE(JTest)
 {
   std::shared_ptr<System> sys = std::make_shared<System>(); 
   sys->initialise(/*mu*/1.,

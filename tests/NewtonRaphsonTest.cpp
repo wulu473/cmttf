@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE(linear)
       f[1] = 1.1*x[0] + 1.3*x[1] + 0.3;
     };
   std::function<void(const NewtonRaphson::EVector&, NewtonRaphson::ESpMatRowMaj&)> jac =
-    [](const NewtonRaphson::EVector& x, NewtonRaphson::ESpMatRowMaj& J)
+    [](const NewtonRaphson::EVector& /*x*/, NewtonRaphson::ESpMatRowMaj& J)
     {
       typedef Eigen::Triplet<real> T;
       std::vector<T> coeffs;
