@@ -37,8 +37,8 @@ void ImplicitLinearSolver::initialiseFromFile()
  */
 void ImplicitLinearSolver::function(const Vector& states_old, const Vector& states_new, const real dt, const real t, Vector& f) const
 {
-  static const std::shared_ptr<const System> system = Modules::uniqueModule<System>();
-  static const std::shared_ptr<const Domain> domain = Modules::uniqueModule<Domain>();
+  static const std::shared_ptr<const System> system = ModuleList::uniqueModule<System>();
+  static const std::shared_ptr<const Domain> domain = ModuleList::uniqueModule<Domain>();
 
   assert(f.size() == domain->cells()*SystemAttributes::stateSize);
   assert(states_old.size() == states_new.size());
@@ -102,8 +102,8 @@ void ImplicitLinearSolver::jacobian(const Vector& states_old, const Vector& stat
   const int stenS = SystemAttributes::stencilSize;
   const int statS = SystemAttributes::stateSize;
 
-  const static std::shared_ptr<const System> system = Modules::uniqueModule<System>();
-  const static std::shared_ptr<const Domain> domain = Modules::uniqueModule<Domain>();
+  const static std::shared_ptr<const System> system = ModuleList::uniqueModule<System>();
+  const static std::shared_ptr<const Domain> domain = ModuleList::uniqueModule<Domain>();
 
   assert((unsigned int)(J.rows()) == domain->cells()*statS);
   assert((unsigned int)(J.cols()) == domain->cells()*statS);
@@ -208,7 +208,7 @@ void ImplicitLinearSolver::advance(std::shared_ptr<DataPatch> states, const real
 {
   BOOST_LOG_TRIVIAL(debug) << "ImplicitLinearSolver: Advancing data patch by dt = " << dt << ", t = " << t;
 
-  static const std::shared_ptr<const RootFinder> solver = Modules::uniqueModule<RootFinder>();
+  static const std::shared_ptr<const RootFinder> solver = ModuleList::uniqueModule<RootFinder>();
 
   // IMPROVE this by using Eigen::map and not copy all the states
   const unsigned int statS = SystemAttributes::stateSize;

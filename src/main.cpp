@@ -65,21 +65,21 @@ int main (int argc, char *argv[])
 
   // Initalise from settings file
   Parameters::readFile(settingsFileName);
-  Modules::initialiseFromFile();
+  ModuleList::initialiseFromFile();
 
   // Enable floating point exceptions
   feenableexcept(FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID);
 
   // Get active modules
-  std::list<std::shared_ptr<Output> > activeOutputModules = Modules::mutableModules<Output>();
-  std::shared_ptr<const InitialCondition> initialCond = Modules::uniqueModule<InitialCondition>();
+  std::list<std::shared_ptr<Output> > activeOutputModules = ModuleList::mutableModules<Output>();
+  std::shared_ptr<const InitialCondition> initialCond = ModuleList::uniqueModule<InitialCondition>();
 
   // Initialise solver
   std::shared_ptr<SystemSolver> solver = std::make_shared<SystemSolver>();
   solver->initialiseFromFile();
 
   // Set initial condition 
-  const unsigned int nCells = Modules::uniqueModule<Domain>()->cells();
+  const unsigned int nCells = ModuleList::uniqueModule<Domain>()->cells();
   std::shared_ptr<DataPatch> data = std::make_shared<DataPatch>(nCells);
   initialCond->setData(data);
 
@@ -130,7 +130,7 @@ int main (int argc, char *argv[])
   BOOST_LOG_TRIVIAL(info) << "Simulation finished.";
 
   // Tidy up
-  Modules::clear();
+  ModuleList::clear();
 
   return exitcode;
 }

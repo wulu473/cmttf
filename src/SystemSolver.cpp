@@ -35,7 +35,7 @@ void SystemSolver::initialiseFromFile()
 void SystemSolver::advance(std::shared_ptr<DataPatch> data, const real t, const real dt, 
                  const unsigned int i) const
 {
-  Modules::uniqueModule<TimeIntegrator>()->advance(data,dt,t);
+  ModuleList::uniqueModule<TimeIntegrator>()->advance(data,dt,t);
 }
 
 real SystemSolver::maxDt(std::shared_ptr<DataPatch> data, const real t) const

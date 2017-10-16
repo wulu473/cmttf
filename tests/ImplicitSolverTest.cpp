@@ -19,11 +19,11 @@ BOOST_AUTO_TEST_CASE(setupFunctionRand)
 {
   std::shared_ptr<System> sys = std::make_shared<System>(); 
   sys->initialise(1.,1.1,1.2,111,0.12,[](real,real){return 1.23;},[](real,real){return 4.;});
-  Modules::addModule(sys);
+  ModuleList::addModule(sys);
 
   std::shared_ptr<Flat> flat = std::make_shared<Flat>();
   flat->initialise(5,0.,0.5);
-  Modules::addModule(flat);
+  ModuleList::addModule(flat);
 
   ImplicitSolver::Vector states_old(10);
   states_old <<  7.55208555e-05,4.52495383e-01,
@@ -61,18 +61,18 @@ BOOST_AUTO_TEST_CASE(setupFunctionRand)
   BOOST_CHECK_CLOSE(f[8],-8.00039545e-01 , 1e-5);
   BOOST_CHECK_CLOSE(f[9], 7.32411535e+07 , 1e-5);
 
-  Modules::clear();
+  ModuleList::clear();
 }
 
 BOOST_AUTO_TEST_CASE(setupJacobianRand)
 {
   std::shared_ptr<System> sys = std::make_shared<System>(); 
   sys->initialise(1.,1.1,1.2,111,0.12,[](real,real){return 1.23;},[](real,real){return 4.;});
-  Modules::addModule(sys);
+  ModuleList::addModule(sys);
 
   std::shared_ptr<Flat> flat = std::make_shared<Flat>();
   flat->initialise(5,0.,0.5);
-  Modules::addModule(flat);
+  ModuleList::addModule(flat);
 
   ImplicitSolver::Vector states(10);
 
@@ -154,7 +154,7 @@ BOOST_AUTO_TEST_CASE(setupJacobianRand)
   BOOST_CHECK_CLOSE(J.coeff(9,8), -2.60317330e+12, 1e-5);
   BOOST_CHECK_CLOSE(J.coeff(9,9),  1.41648956e+08, 1e-5);
 
-  Modules::clear();
+  ModuleList::clear();
 }
 BOOST_AUTO_TEST_SUITE_END()
 

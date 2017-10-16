@@ -1,10 +1,10 @@
 
 #ifndef MODULES
-#error ModulesTemplates.cpp must be included in ModuleList.hpp
+#error ModuleListTemplates.cpp must be included in ModuleList.hpp
 #endif
 
 template<typename T>
-std::list<std::shared_ptr<T> > Modules::mutableModules()
+std::list<std::shared_ptr<T> > ModuleList::mutableModules()
 {
   std::list<std::shared_ptr<T> > mods;
   for(std::list<std::shared_ptr<ModuleBase> >::const_iterator it = m_modules.begin(); it != m_modules.end(); ++it)
@@ -20,7 +20,7 @@ std::list<std::shared_ptr<T> > Modules::mutableModules()
 
 //! Return a list of active modules of type T. May be empty if no modules are active
 template<typename T>
-std::list<std::shared_ptr<const T> > Modules::modules()
+std::list<std::shared_ptr<const T> > ModuleList::modules()
 {
   std::list<std::shared_ptr<const T> > mods;
   for(std::list<std::shared_ptr<ModuleBase> >::const_iterator it = m_modules.begin(); it != m_modules.end(); ++it)
@@ -35,7 +35,7 @@ std::list<std::shared_ptr<const T> > Modules::modules()
 }
 
 template<typename T>
-std::shared_ptr<const T> Modules::module()
+std::shared_ptr<const T> ModuleList::module()
 {
   std::list<std::shared_ptr<const T> > mods = modules<T>();
   if(mods.size()>1)
@@ -53,7 +53,7 @@ std::shared_ptr<const T> Modules::module()
 }
 
 template<typename T>
-std::shared_ptr<const T> Modules::uniqueModule()
+std::shared_ptr<const T> ModuleList::uniqueModule()
 {
   std::list<std::shared_ptr<const T> > mods = modules<T>();
   if(mods.size()>1)

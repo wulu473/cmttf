@@ -14,7 +14,7 @@ namespace ModulesListInitialiser
   std::list<std::shared_ptr<T> > makeList() {std::list<std::shared_ptr<T> > t; return t;};
 };
 
-class Modules
+class ModuleList
 {
   public:
     template<typename T>
@@ -41,6 +41,6 @@ class Modules
     static std::list<std::shared_ptr<ModuleBase> > m_modules;
 };
 
-#include "ModulesTemplates.cpp"
+#include "ModuleListTemplates.cpp"
 
 #endif
