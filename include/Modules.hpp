@@ -20,7 +20,7 @@ class Modules
     template<typename T>
     static std::shared_ptr<const T> module();
 
-    //! Return pointer of active module. Gurantees there is only one active module of this kind
+    //! Return pointer of active module. Guarantees there is only one active module of this kind
     template<typename T>
     static std::shared_ptr<const T> uniqueModule();
 
