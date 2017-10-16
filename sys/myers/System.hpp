@@ -19,8 +19,8 @@ class System : public SystemBase
     StencilJacobian JLinear(const StencilArray& states, const StencilArray& states_old,
                                         const real dx, const real x, const real t) const;
 
-    void initialise(const real mu, const real sigma, const TimeSpaceDependReal tau, 
-                    const TimeSpaceDependReal beta);
+    void initialise(const real mu, const real sigma, const real g1, const real g2,
+                    const TimeSpaceDependReal tau, const TimeSpaceDependReal beta);
 
     void initialiseFromFile();
 
@@ -41,6 +41,9 @@ class System : public SystemBase
     
     //! Surface tension of water
     real m_sigma;
+
+    //! Gravity
+    real m_g1, m_g2;
 };
 
 #endif

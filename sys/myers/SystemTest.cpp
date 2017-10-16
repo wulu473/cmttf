@@ -14,6 +14,8 @@ BOOST_AUTO_TEST_CASE(J_num)
   std::shared_ptr<System> sys = std::make_shared<System>(); 
   sys->initialise(/*mu*/1.,
                   /*sigma*/0.12,
+                  /*g1*/0.,
+                  /*g2*/0.,
                   /*tau*/[](real,real){return 1.23;},
                   /*beta*/[](real,real){return 4.;});
 
@@ -39,6 +41,8 @@ BOOST_AUTO_TEST_CASE(F_old_new)
   std::shared_ptr<System> sys = std::make_shared<System>(); 
   sys->initialise(/*mu*/1.,
                   /*sigma*/0.12,
+                  /*g1*/0.,
+                  /*g2*/0.,
                   /*tau*/[](real,real){return 1.23;},
                   /*beta*/[](real,real){return 4.;});
 

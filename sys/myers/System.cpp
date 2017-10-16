@@ -9,6 +9,8 @@ State System::F(const StencilArray& states, const real dx, const real x, const r
   const real sigma = m_sigma;
   const real mu = m_mu;
   const real tau = m_tau(t,x);
+  const real g1 = m_g1;
+  const real g2 = m_g2;
 
   const real u_0_0 = states[0][0];
   const real u_1_0 = states[1][0];
@@ -17,7 +19,8 @@ State System::F(const StencilArray& states, const real dx, const real x, const r
   const real u_4_0 = states[4][0];
 
   State F;
-  F[0] = -beta - 1.0L/8.0L*tau*pow(u_1_0, 2)/(dx*mu) - 1.0L/4.0L*tau*u_1_0*u_2_0/(dx*mu) + (1.0L/4.0L)*tau*u_2_0*u_3_0/(dx*mu) + (1.0L/8.0L)*tau*pow(u_3_0, 2)/(dx*mu) + (1.0L/24.0L)*sigma*u_0_0*pow(u_1_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u_0_0*pow(u_1_0, 2)*u_2_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u_0_0*u_1_0*pow(u_2_0, 2)/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*u_0_0*pow(u_2_0, 3)/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u_1_0, 4)/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*pow(u_1_0, 3)*u_2_0/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*pow(u_1_0, 3)*u_3_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u_1_0, 2)*u_2_0*u_3_0/(pow(dx, 4)*mu) + (5.0L/24.0L)*sigma*u_1_0*pow(u_2_0, 3)/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*u_1_0*pow(u_2_0, 2)*u_3_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u_1_0*u_2_0*pow(u_3_0, 2)/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*u_1_0*pow(u_3_0, 3)/(pow(dx, 4)*mu) + (1.0L/4.0L)*sigma*pow(u_2_0, 4)/(pow(dx, 4)*mu) + (5.0L/24.0L)*sigma*pow(u_2_0, 3)*u_3_0/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u_2_0, 3)*u_4_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u_2_0, 2)*u_3_0*u_4_0/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*u_2_0*pow(u_3_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u_2_0*pow(u_3_0, 2)*u_4_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u_3_0, 4)/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u_3_0, 3)*u_4_0/(pow(dx, 4)*mu);
+//  F[0] = -beta - 1.0L/8.0L*tau*pow(u_1_0, 2)/(dx*mu) - 1.0L/4.0L*tau*u_1_0*u_2_0/(dx*mu) + (1.0L/4.0L)*tau*u_2_0*u_3_0/(dx*mu) + (1.0L/8.0L)*tau*pow(u_3_0, 2)/(dx*mu) + (1.0L/24.0L)*sigma*u_0_0*pow(u_1_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u_0_0*pow(u_1_0, 2)*u_2_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u_0_0*u_1_0*pow(u_2_0, 2)/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*u_0_0*pow(u_2_0, 3)/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u_1_0, 4)/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*pow(u_1_0, 3)*u_2_0/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*pow(u_1_0, 3)*u_3_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u_1_0, 2)*u_2_0*u_3_0/(pow(dx, 4)*mu) + (5.0L/24.0L)*sigma*u_1_0*pow(u_2_0, 3)/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*u_1_0*pow(u_2_0, 2)*u_3_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u_1_0*u_2_0*pow(u_3_0, 2)/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*u_1_0*pow(u_3_0, 3)/(pow(dx, 4)*mu) + (1.0L/4.0L)*sigma*pow(u_2_0, 4)/(pow(dx, 4)*mu) + (5.0L/24.0L)*sigma*pow(u_2_0, 3)*u_3_0/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u_2_0, 3)*u_4_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u_2_0, 2)*u_3_0*u_4_0/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*u_2_0*pow(u_3_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u_2_0*pow(u_3_0, 2)*u_4_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u_3_0, 4)/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u_3_0, 3)*u_4_0/(pow(dx, 4)*mu);
+  F[0] = -beta + (1.0L/2.0L)*g1*u_1_0/dx - 1.0L/2.0L*g1*u_3_0/dx - 1.0L/8.0L*tau*pow(u_1_0, 2)/(dx*mu) - 1.0L/4.0L*tau*u_1_0*u_2_0/(dx*mu) + (1.0L/4.0L)*tau*u_2_0*u_3_0/(dx*mu) + (1.0L/8.0L)*tau*pow(u_3_0, 2)/(dx*mu) + g2*u_1_0/pow(dx, 2) - 2*g2*u_2_0/pow(dx, 2) + g2*u_3_0/pow(dx, 2) + (1.0L/24.0L)*sigma*u_0_0*pow(u_1_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u_0_0*pow(u_1_0, 2)*u_2_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u_0_0*u_1_0*pow(u_2_0, 2)/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*u_0_0*pow(u_2_0, 3)/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u_1_0, 4)/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*pow(u_1_0, 3)*u_2_0/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*pow(u_1_0, 3)*u_3_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u_1_0, 2)*u_2_0*u_3_0/(pow(dx, 4)*mu) + (5.0L/24.0L)*sigma*u_1_0*pow(u_2_0, 3)/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*u_1_0*pow(u_2_0, 2)*u_3_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u_1_0*u_2_0*pow(u_3_0, 2)/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*u_1_0*pow(u_3_0, 3)/(pow(dx, 4)*mu) + (1.0L/4.0L)*sigma*pow(u_2_0, 4)/(pow(dx, 4)*mu) + (5.0L/24.0L)*sigma*pow(u_2_0, 3)*u_3_0/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u_2_0, 3)*u_4_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u_2_0, 2)*u_3_0*u_4_0/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*u_2_0*pow(u_3_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u_2_0*pow(u_3_0, 2)*u_4_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u_3_0, 4)/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u_3_0, 3)*u_4_0/(pow(dx, 4)*mu);
   return F;
 }
 
@@ -29,6 +32,8 @@ State System::FLinear(const StencilArray& states_new, const StencilArray& states
   const real sigma = m_sigma;
   const real mu = m_mu;
   const real tau = m_tau(t,x);
+  const real g1 = m_g1;
+  const real g2 = m_g2;
 
   const real u_0_0 = states_new[0][0];
   const real u_1_0 = states_new[1][0];
@@ -42,7 +47,9 @@ State System::FLinear(const StencilArray& states_new, const StencilArray& states
 //  const real u0_4_0 = states_old[4][0];
 
   State F_lin;
-  F_lin[0] = -beta - 1.0L/8.0L*tau*pow(u0_1_0, 2)/(dx*mu) - 1.0L/4.0L*tau*u0_1_0*u0_2_0/(dx*mu) + (1.0L/4.0L)*tau*u0_2_0*u0_3_0/(dx*mu) + (1.0L/8.0L)*tau*pow(u0_3_0, 2)/(dx*mu) + (1.0L/24.0L)*sigma*pow(u0_1_0, 3)*u_0_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_1_0, 3)*u_1_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_1_0, 3)*u_2_0/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*pow(u0_1_0, 3)*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_1_0, 2)*u0_2_0*u_0_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*pow(u0_1_0, 2)*u0_2_0*u_1_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*pow(u0_1_0, 2)*u0_2_0*u_2_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_1_0, 2)*u0_2_0*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u0_1_0*pow(u0_2_0, 2)*u_0_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*u0_1_0*pow(u0_2_0, 2)*u_1_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*u0_1_0*pow(u0_2_0, 2)*u_2_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u0_1_0*pow(u0_2_0, 2)*u_3_0/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u0_2_0, 3)*u_0_0/(pow(dx, 4)*mu) - 1.0L/6.0L*sigma*pow(u0_2_0, 3)*u_1_0/(pow(dx, 4)*mu) + (1.0L/4.0L)*sigma*pow(u0_2_0, 3)*u_2_0/(pow(dx, 4)*mu) - 1.0L/6.0L*sigma*pow(u0_2_0, 3)*u_3_0/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u0_2_0, 3)*u_4_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_2_0, 2)*u0_3_0*u_1_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*pow(u0_2_0, 2)*u0_3_0*u_2_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*pow(u0_2_0, 2)*u0_3_0*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_2_0, 2)*u0_3_0*u_4_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u0_2_0*pow(u0_3_0, 2)*u_1_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*u0_2_0*pow(u0_3_0, 2)*u_2_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*u0_2_0*pow(u0_3_0, 2)*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u0_2_0*pow(u0_3_0, 2)*u_4_0/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*pow(u0_3_0, 3)*u_1_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_3_0, 3)*u_2_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_3_0, 3)*u_3_0/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u0_3_0, 3)*u_4_0/(pow(dx, 4)*mu);
+//  F_lin[0] = -beta - 1.0L/8.0L*tau*pow(u0_1_0, 2)/(dx*mu) - 1.0L/4.0L*tau*u0_1_0*u0_2_0/(dx*mu) + (1.0L/4.0L)*tau*u0_2_0*u0_3_0/(dx*mu) + (1.0L/8.0L)*tau*pow(u0_3_0, 2)/(dx*mu) + (1.0L/24.0L)*sigma*pow(u0_1_0, 3)*u_0_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_1_0, 3)*u_1_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_1_0, 3)*u_2_0/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*pow(u0_1_0, 3)*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_1_0, 2)*u0_2_0*u_0_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*pow(u0_1_0, 2)*u0_2_0*u_1_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*pow(u0_1_0, 2)*u0_2_0*u_2_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_1_0, 2)*u0_2_0*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u0_1_0*pow(u0_2_0, 2)*u_0_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*u0_1_0*pow(u0_2_0, 2)*u_1_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*u0_1_0*pow(u0_2_0, 2)*u_2_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u0_1_0*pow(u0_2_0, 2)*u_3_0/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u0_2_0, 3)*u_0_0/(pow(dx, 4)*mu) - 1.0L/6.0L*sigma*pow(u0_2_0, 3)*u_1_0/(pow(dx, 4)*mu) + (1.0L/4.0L)*sigma*pow(u0_2_0, 3)*u_2_0/(pow(dx, 4)*mu) - 1.0L/6.0L*sigma*pow(u0_2_0, 3)*u_3_0/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u0_2_0, 3)*u_4_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_2_0, 2)*u0_3_0*u_1_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*pow(u0_2_0, 2)*u0_3_0*u_2_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*pow(u0_2_0, 2)*u0_3_0*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_2_0, 2)*u0_3_0*u_4_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u0_2_0*pow(u0_3_0, 2)*u_1_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*u0_2_0*pow(u0_3_0, 2)*u_2_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*u0_2_0*pow(u0_3_0, 2)*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u0_2_0*pow(u0_3_0, 2)*u_4_0/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*pow(u0_3_0, 3)*u_1_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_3_0, 3)*u_2_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_3_0, 3)*u_3_0/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u0_3_0, 3)*u_4_0/(pow(dx, 4)*mu);
+  F_lin[0] = -beta + (1.0L/2.0L)*g1*u_1_0/dx - 1.0L/2.0L*g1*u_3_0/dx - 1.0L/8.0L*tau*pow(u0_1_0, 2)/(dx*mu) - 1.0L/4.0L*tau*u0_1_0*u0_2_0/(dx*mu) + (1.0L/4.0L)*tau*u0_2_0*u0_3_0/(dx*mu) + (1.0L/8.0L)*tau*pow(u0_3_0, 2)/(dx*mu) + g2*u_1_0/pow(dx, 2) - 2*g2*u_2_0/pow(dx, 2) + g2*u_3_0/pow(dx, 2) + (1.0L/24.0L)*sigma*pow(u0_1_0, 3)*u_0_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_1_0, 3)*u_1_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_1_0, 3)*u_2_0/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*pow(u0_1_0, 3)*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_1_0, 2)*u0_2_0*u_0_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*pow(u0_1_0, 2)*u0_2_0*u_1_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*pow(u0_1_0, 2)*u0_2_0*u_2_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_1_0, 2)*u0_2_0*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u0_1_0*pow(u0_2_0, 2)*u_0_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*u0_1_0*pow(u0_2_0, 2)*u_1_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*u0_1_0*pow(u0_2_0, 2)*u_2_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u0_1_0*pow(u0_2_0, 2)*u_3_0/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u0_2_0, 3)*u_0_0/(pow(dx, 4)*mu) - 1.0L/6.0L*sigma*pow(u0_2_0, 3)*u_1_0/(pow(dx, 4)*mu) + (1.0L/4.0L)*sigma*pow(u0_2_0, 3)*u_2_0/(pow(dx, 4)*mu) - 1.0L/6.0L*sigma*pow(u0_2_0, 3)*u_3_0/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u0_2_0, 3)*u_4_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_2_0, 2)*u0_3_0*u_1_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*pow(u0_2_0, 2)*u0_3_0*u_2_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*pow(u0_2_0, 2)*u0_3_0*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_2_0, 2)*u0_3_0*u_4_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u0_2_0*pow(u0_3_0, 2)*u_1_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*u0_2_0*pow(u0_3_0, 2)*u_2_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*u0_2_0*pow(u0_3_0, 2)*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u0_2_0*pow(u0_3_0, 2)*u_4_0/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*pow(u0_3_0, 3)*u_1_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_3_0, 3)*u_2_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_3_0, 3)*u_3_0/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u0_3_0, 3)*u_4_0/(pow(dx, 4)*mu);
+
   return F_lin;
 }
 
@@ -52,6 +59,8 @@ StencilJacobian System::J(const StencilArray& states,
   const real sigma = m_sigma;
   const real mu = m_mu;
   const real tau = m_tau(t,x);
+  const real g1 = m_g1;
+  const real g2 = m_g2;
 
   const real u_0_0 = states[0][0];
   const real u_1_0 = states[1][0];
@@ -60,11 +69,19 @@ StencilJacobian System::J(const StencilArray& states,
   const real u_4_0 = states[4][0];
 
   StencilJacobian J;
+/*
   J(0,0) = (1.0L/24.0L)*sigma*pow(u_1_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u_1_0, 2)*u_2_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u_1_0*pow(u_2_0, 2)/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u_2_0, 3)/(pow(dx, 4)*mu);
   J(0,1) = -1.0L/4.0L*tau*u_1_0/(dx*mu) - 1.0L/4.0L*tau*u_2_0/(dx*mu) + (1.0L/8.0L)*sigma*u_0_0*pow(u_1_0, 2)/(pow(dx, 4)*mu) + (1.0L/4.0L)*sigma*u_0_0*u_1_0*u_2_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u_0_0*pow(u_2_0, 2)/(pow(dx, 4)*mu) - 1.0L/2.0L*sigma*pow(u_1_0, 3)/(pow(dx, 4)*mu) - 3.0L/4.0L*sigma*pow(u_1_0, 2)*u_2_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u_1_0, 2)*u_3_0/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*u_1_0*u_2_0*u_3_0/(pow(dx, 4)*mu) + (5.0L/24.0L)*sigma*pow(u_2_0, 3)/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*pow(u_2_0, 2)*u_3_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u_2_0*pow(u_3_0, 2)/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*pow(u_3_0, 3)/(pow(dx, 4)*mu);
   J(0,2) = -1.0L/4.0L*tau*u_1_0/(dx*mu) + (1.0L/4.0L)*tau*u_3_0/(dx*mu) + (1.0L/8.0L)*sigma*u_0_0*pow(u_1_0, 2)/(pow(dx, 4)*mu) + (1.0L/4.0L)*sigma*u_0_0*u_1_0*u_2_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u_0_0*pow(u_2_0, 2)/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*pow(u_1_0, 3)/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u_1_0, 2)*u_3_0/(pow(dx, 4)*mu) + (5.0L/8.0L)*sigma*u_1_0*pow(u_2_0, 2)/(pow(dx, 4)*mu) - 1.0L/2.0L*sigma*u_1_0*u_2_0*u_3_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u_1_0*pow(u_3_0, 2)/(pow(dx, 4)*mu) + sigma*pow(u_2_0, 3)/(pow(dx, 4)*mu) + (5.0L/8.0L)*sigma*pow(u_2_0, 2)*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u_2_0, 2)*u_4_0/(pow(dx, 4)*mu) + (1.0L/4.0L)*sigma*u_2_0*u_3_0*u_4_0/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*pow(u_3_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u_3_0, 2)*u_4_0/(pow(dx, 4)*mu);
   J(0,3) = (1.0L/4.0L)*tau*u_2_0/(dx*mu) + (1.0L/4.0L)*tau*u_3_0/(dx*mu) - 1.0L/24.0L*sigma*pow(u_1_0, 3)/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u_1_0, 2)*u_2_0/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*u_1_0*pow(u_2_0, 2)/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*u_1_0*u_2_0*u_3_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u_1_0*pow(u_3_0, 2)/(pow(dx, 4)*mu) + (5.0L/24.0L)*sigma*pow(u_2_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u_2_0, 2)*u_4_0/(pow(dx, 4)*mu) - 3.0L/4.0L*sigma*u_2_0*pow(u_3_0, 2)/(pow(dx, 4)*mu) + (1.0L/4.0L)*sigma*u_2_0*u_3_0*u_4_0/(pow(dx, 4)*mu) - 1.0L/2.0L*sigma*pow(u_3_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u_3_0, 2)*u_4_0/(pow(dx, 4)*mu);
   J(0,4) = (1.0L/24.0L)*sigma*pow(u_2_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u_2_0, 2)*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u_2_0*pow(u_3_0, 2)/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u_3_0, 3)/(pow(dx, 4)*mu);
+*/
+  J(0,0) = (1.0L/24.0L)*sigma*pow(u_1_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u_1_0, 2)*u_2_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u_1_0*pow(u_2_0, 2)/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u_2_0, 3)/(pow(dx, 4)*mu);
+  J(0,1) = (1.0L/2.0L)*g1/dx - 1.0L/4.0L*tau*u_1_0/(dx*mu) - 1.0L/4.0L*tau*u_2_0/(dx*mu) + g2/pow(dx, 2) + (1.0L/8.0L)*sigma*u_0_0*pow(u_1_0, 2)/(pow(dx, 4)*mu) + (1.0L/4.0L)*sigma*u_0_0*u_1_0*u_2_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u_0_0*pow(u_2_0, 2)/(pow(dx, 4)*mu) - 1.0L/2.0L*sigma*pow(u_1_0, 3)/(pow(dx, 4)*mu) - 3.0L/4.0L*sigma*pow(u_1_0, 2)*u_2_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u_1_0, 2)*u_3_0/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*u_1_0*u_2_0*u_3_0/(pow(dx, 4)*mu) + (5.0L/24.0L)*sigma*pow(u_2_0, 3)/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*pow(u_2_0, 2)*u_3_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u_2_0*pow(u_3_0, 2)/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*pow(u_3_0, 3)/(pow(dx, 4)*mu);
+  J(0,2) = -1.0L/4.0L*tau*u_1_0/(dx*mu) + (1.0L/4.0L)*tau*u_3_0/(dx*mu) - 2*g2/pow(dx, 2) + (1.0L/8.0L)*sigma*u_0_0*pow(u_1_0, 2)/(pow(dx, 4)*mu) + (1.0L/4.0L)*sigma*u_0_0*u_1_0*u_2_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u_0_0*pow(u_2_0, 2)/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*pow(u_1_0, 3)/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u_1_0, 2)*u_3_0/(pow(dx, 4)*mu) + (5.0L/8.0L)*sigma*u_1_0*pow(u_2_0, 2)/(pow(dx, 4)*mu) - 1.0L/2.0L*sigma*u_1_0*u_2_0*u_3_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u_1_0*pow(u_3_0, 2)/(pow(dx, 4)*mu) + sigma*pow(u_2_0, 3)/(pow(dx, 4)*mu) + (5.0L/8.0L)*sigma*pow(u_2_0, 2)*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u_2_0, 2)*u_4_0/(pow(dx, 4)*mu) + (1.0L/4.0L)*sigma*u_2_0*u_3_0*u_4_0/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*pow(u_3_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u_3_0, 2)*u_4_0/(pow(dx, 4)*mu);
+  J(0,3) = -1.0L/2.0L*g1/dx + (1.0L/4.0L)*tau*u_2_0/(dx*mu) + (1.0L/4.0L)*tau*u_3_0/(dx*mu) + g2/pow(dx, 2) - 1.0L/24.0L*sigma*pow(u_1_0, 3)/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u_1_0, 2)*u_2_0/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*u_1_0*pow(u_2_0, 2)/(pow(dx, 4)*mu) - 1.0L/4.0L*sigma*u_1_0*u_2_0*u_3_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u_1_0*pow(u_3_0, 2)/(pow(dx, 4)*mu) + (5.0L/24.0L)*sigma*pow(u_2_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u_2_0, 2)*u_4_0/(pow(dx, 4)*mu) - 3.0L/4.0L*sigma*u_2_0*pow(u_3_0, 2)/(pow(dx, 4)*mu) + (1.0L/4.0L)*sigma*u_2_0*u_3_0*u_4_0/(pow(dx, 4)*mu) - 1.0L/2.0L*sigma*pow(u_3_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u_3_0, 2)*u_4_0/(pow(dx, 4)*mu);
+  J(0,4) = (1.0L/24.0L)*sigma*pow(u_2_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u_2_0, 2)*u_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u_2_0*pow(u_3_0, 2)/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u_3_0, 3)/(pow(dx, 4)*mu);
+
   return J;
 }
 
@@ -76,32 +93,44 @@ StencilJacobian System::JLinear(const StencilArray& /*states_new*/, const Stenci
 {
   const real sigma = m_sigma;
   const real mu = m_mu;
-//  const real tau = m_tau(t,x);
+  const real g1 = m_g1;
+  const real g2 = m_g2;
+//  const real tau = m_tau(t,x); (not dependent on tau)
 
   // F should be linear in states_new. J is therefore not dependent on states_new
 
-//  const real u0_0_0 = states_old[0][0];
+//  const real u0_0_0 = states_old[0][0]; ( not dependent unt u0_0_0)
   const real u0_1_0 = states_old[1][0];
   const real u0_2_0 = states_old[2][0];
   const real u0_3_0 = states_old[3][0];
 //  const real u0_4_0 = states_old[4][0];
 
   StencilJacobian J_lin;
+  /*
   J_lin(0,0) = (1.0L/24.0L)*sigma*pow(u0_1_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_1_0, 2)*u0_2_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u0_1_0*pow(u0_2_0, 2)/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u0_2_0, 3)/(pow(dx, 4)*mu);
   J_lin(0,1) = -1.0L/8.0L*sigma*pow(u0_1_0, 3)/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*pow(u0_1_0, 2)*u0_2_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*u0_1_0*pow(u0_2_0, 2)/(pow(dx, 4)*mu) - 1.0L/6.0L*sigma*pow(u0_2_0, 3)/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_2_0, 2)*u0_3_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u0_2_0*pow(u0_3_0, 2)/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*pow(u0_3_0, 3)/(pow(dx, 4)*mu);
   J_lin(0,2) = (1.0L/8.0L)*sigma*pow(u0_1_0, 3)/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*pow(u0_1_0, 2)*u0_2_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*u0_1_0*pow(u0_2_0, 2)/(pow(dx, 4)*mu) + (1.0L/4.0L)*sigma*pow(u0_2_0, 3)/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*pow(u0_2_0, 2)*u0_3_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*u0_2_0*pow(u0_3_0, 2)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_3_0, 3)/(pow(dx, 4)*mu);
   J_lin(0,3) = -1.0L/24.0L*sigma*pow(u0_1_0, 3)/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_1_0, 2)*u0_2_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u0_1_0*pow(u0_2_0, 2)/(pow(dx, 4)*mu) - 1.0L/6.0L*sigma*pow(u0_2_0, 3)/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*pow(u0_2_0, 2)*u0_3_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*u0_2_0*pow(u0_3_0, 2)/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_3_0, 3)/(pow(dx, 4)*mu);
   J_lin(0,4) = (1.0L/24.0L)*sigma*pow(u0_2_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_2_0, 2)*u0_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u0_2_0*pow(u0_3_0, 2)/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u0_3_0, 3)/(pow(dx, 4)*mu);
+  */
+  J_lin(0,0) = (1.0L/24.0L)*sigma*pow(u0_1_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_1_0, 2)*u0_2_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u0_1_0*pow(u0_2_0, 2)/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u0_2_0, 3)/(pow(dx, 4)*mu);
+  J_lin(0,1) = (1.0L/2.0L)*g1/dx + g2/pow(dx, 2) - 1.0L/8.0L*sigma*pow(u0_1_0, 3)/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*pow(u0_1_0, 2)*u0_2_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*u0_1_0*pow(u0_2_0, 2)/(pow(dx, 4)*mu) - 1.0L/6.0L*sigma*pow(u0_2_0, 3)/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_2_0, 2)*u0_3_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u0_2_0*pow(u0_3_0, 2)/(pow(dx, 4)*mu) - 1.0L/24.0L*sigma*pow(u0_3_0, 3)/(pow(dx, 4)*mu);
+  J_lin(0,2) = -2*g2/pow(dx, 2) + (1.0L/8.0L)*sigma*pow(u0_1_0, 3)/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*pow(u0_1_0, 2)*u0_2_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*u0_1_0*pow(u0_2_0, 2)/(pow(dx, 4)*mu) + (1.0L/4.0L)*sigma*pow(u0_2_0, 3)/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*pow(u0_2_0, 2)*u0_3_0/(pow(dx, 4)*mu) + (3.0L/8.0L)*sigma*u0_2_0*pow(u0_3_0, 2)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_3_0, 3)/(pow(dx, 4)*mu);
+  J_lin(0,3) = -1.0L/2.0L*g1/dx + g2/pow(dx, 2) - 1.0L/24.0L*sigma*pow(u0_1_0, 3)/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_1_0, 2)*u0_2_0/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*u0_1_0*pow(u0_2_0, 2)/(pow(dx, 4)*mu) - 1.0L/6.0L*sigma*pow(u0_2_0, 3)/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*pow(u0_2_0, 2)*u0_3_0/(pow(dx, 4)*mu) - 3.0L/8.0L*sigma*u0_2_0*pow(u0_3_0, 2)/(pow(dx, 4)*mu) - 1.0L/8.0L*sigma*pow(u0_3_0, 3)/(pow(dx, 4)*mu);
+  J_lin(0,4) = (1.0L/24.0L)*sigma*pow(u0_2_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*pow(u0_2_0, 2)*u0_3_0/(pow(dx, 4)*mu) + (1.0L/8.0L)*sigma*u0_2_0*pow(u0_3_0, 2)/(pow(dx, 4)*mu) + (1.0L/24.0L)*sigma*pow(u0_3_0, 3)/(pow(dx, 4)*mu);
+
   return J_lin;
 }
 
-void System::initialise(const real mu, const real sigma,
+void System::initialise(const real mu, const real sigma, const real g1, const real g2,
           const TimeSpaceDependReal tau, const TimeSpaceDependReal beta)
 {
   m_mu = mu;
   m_tau = tau;
   m_sigma = sigma;
   m_beta = beta;
+  m_g1 = g1;
+  m_g2 = g2;
 }
 
 void System::initialiseFromFile()
@@ -110,6 +139,9 @@ void System::initialiseFromFile()
   const TimeSpaceDependReal tau = getParameter<TimeSpaceDependReal>("tau");
   const TimeSpaceDependReal beta = getParameter<TimeSpaceDependReal>("beta");
   const real sigma = getParameter<real>("sigma");
+  const std::vector<real> g = getVectorParameter<real>("g");
 
-  this->initialise(mu,sigma,tau,beta);
+  assert(g.size() == 2); // Check if g is a 2D vector in the settings file
+
+  this->initialise(mu,sigma,g[0],g[1],tau,beta);
 }
