@@ -1,13 +1,13 @@
 
 
-#include "Modules.hpp"
+#include "ModuleList.hpp"
 
 #include "System.hpp"
 
-std::list<std::shared_ptr<ModuleBase> > Modules::m_modules = ModulesListInitialiser::makeList<ModuleBase>();
+std::list<std::shared_ptr<ModuleBase> > ModuleList::m_modules = ModulesListInitialiser::makeList<ModuleBase>();
 
 //! Read settings file and create instances of active modules
-void Modules::initialiseFromFile()
+void ModuleList::initialiseFromFile()
 {
   std::list<std::string> activeModuleNames = Parameters::allActiveModules();
 
@@ -25,12 +25,12 @@ void Modules::initialiseFromFile()
 }
 
 
-void Modules::addModule(const std::shared_ptr<ModuleBase> module)
+void ModuleList::addModule(const std::shared_ptr<ModuleBase> module)
 {
   m_modules.push_back(module);
 }
 
-void Modules::clear()
+void ModuleList::clear()
 {
   m_modules.clear();
 }

@@ -4,8 +4,6 @@
 
 #include "Output.hpp"
 
-#include "Modules.hpp"
-
 class Gnuplot : public Output
 {
   REGISTER(Gnuplot);

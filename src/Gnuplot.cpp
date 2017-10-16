@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iomanip>
 
+#include "ModuleList.hpp"
 #include "Domain.hpp"
 #include "Git.hpp"
 
@@ -64,14 +65,14 @@ void Gnuplot::output(const std::shared_ptr<DataPatch> data, const real t,
   if(file.is_open())
   {
     BOOST_LOG_TRIVIAL(info) << "Starting output " << filename.str();
-    auto domain = Modules::uniqueModule<Domain>();
+    auto domain = ModuleList::uniqueModule<Domain>();
 
     file << "# version: " << GIT_ID << std::endl;
     file << "# t = " << t << std::endl;
     file << "# 1: x" << std::endl;
     /*
      * TODO Print variable names
-    const std::vector<std::string> names = Modules::uniqueModule<System>()->variableNames();
+    const std::vector<std::string> names = ModuleList::uniqueModule<System>()->variableNames();
     for(unsigned int i=0;i<names.size();i++)
       file << "# " << i+2 << ": " << names[i] << std::endl;
     */

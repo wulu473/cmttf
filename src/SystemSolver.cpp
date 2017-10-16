@@ -1,6 +1,6 @@
 
 #include "SystemSolver.hpp"
-#include "Modules.hpp"
+#include "ModuleList.hpp"
 #include "TimeIntegrator.hpp"
 
 SystemSolver::SystemSolver()
@@ -35,7 +35,7 @@ void SystemSolver::initialiseFromFile()
 void SystemSolver::advance(std::shared_ptr<DataPatch> data, const real t, const real dt, 
                  const unsigned int /*iter*/) const
 {
-  Modules::uniqueModule<TimeIntegrator>()->advance(data,dt,t);
+  ModuleList::uniqueModule<TimeIntegrator>()->advance(data,dt,t);
 }
 
 real SystemSolver::maxDt(std::shared_ptr<DataPatch> /*data*/, const real t) const
