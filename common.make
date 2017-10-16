@@ -146,7 +146,7 @@ test: unit-tests regression-tests
 .PHONY: regression-tests
 regression-tests: $(SYSTEM)
 	@echo "Running regression tests..."
-	@./regression-tests
+	@./regression-tests -s $(SYSTEM)
 
 # Create directories
 .PHONY: object-dirs

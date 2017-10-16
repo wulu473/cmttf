@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 import filelock
 import glob
 import os
@@ -76,10 +77,15 @@ def checkOutputs(tests):
         
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--system','-s', help='Name of the model (By default all are run)')
+    args = parser.parse_args()
+
     tests = []
     for path, subdirs, files in os.walk("validationSettings"):
-        for name in files:
-            tests.append(os.path.join(path,name))
+        if not args.system or args.system in path:
+            for name in files:
+                tests.append(os.path.join(path,name))
     tests = [ os.path.splitext(os.path.relpath(test,"validationSettings"))[0] for test in tests]
 
     runTests(tests)
