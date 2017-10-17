@@ -128,7 +128,7 @@ class Myers(System):
         tension = hCR**3/(3*mu*dx**4)*sigma*(-hL+3*hC-3*hR+hRR) - \
                   hLC**3/(3*mu*dx**4)*sigma*(-hLL+3*hL-3*hC+hR)
         gravity = hCR**3/(3*mu*dx**2)*g2*(hR-hC) - \
-                  hLC**3/(3*mu*dx**2)*g2*(hC-hL) - \
+                  hLC**3/(3*mu*dx**2)*g2*(hC-hL) + \
                   (hCR**3/(3*mu*dx)*g1 - hLC**3/(3*mu*dx)*g1)
 
         self.F_disc = [(stress + tension + gravity - self.beta).subs(self.x, self.x_i)]
@@ -137,7 +137,7 @@ class Myers(System):
         tension_lin = h0CR**3/(3*mu*dx**4)*sigma*(-hL+3*hC-3*hR+hRR) - \
                       h0LC**3/(3*mu*dx**4)*sigma*(-hLL+3*hL-3*hC+hR)
         gravity_lin = h0CR**3/(3*mu*dx**2)*g2*(hR-hC) - \
-                      h0LC**3/(3*mu*dx**2)*g2*(hC-hL) - \
+                      h0LC**3/(3*mu*dx**2)*g2*(hC-hL) + \
                       (h0CR**3/(3*mu*dx)*g1 - h0LC**3/(3*mu*dx)*g1)
         # beta is already linear
         self.F_disc_lin = [(stress_lin + tension_lin + gravity_lin - self.beta).subs(self.x, self.x_i)]
