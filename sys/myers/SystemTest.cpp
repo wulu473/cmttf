@@ -16,8 +16,8 @@ BOOST_AUTO_TEST_CASE(J_num)
                   /*sigma*/0.12,
                   /*g1*/1.,
                   /*g2*/2.,
-                  /*tau*/[](real,real){return 1.23;},
-                  /*beta*/[](real,real){return 4.;});
+                  /*tau*/TimeSpaceDependReal("1.23"),
+                  /*beta*/TimeSpaceDependReal("4."));
 
   State state1, state2, state3, state4, state5;
   state1 << 7.55208555;
@@ -43,8 +43,8 @@ BOOST_AUTO_TEST_CASE(F_old_new)
                   /*sigma*/0.12,
                   /*g1*/0.,
                   /*g2*/0.,
-                  /*tau*/[](real,real){return 1.23;},
-                  /*beta*/[](real,real){return 4.;});
+                  /*tau*/TimeSpaceDependReal("1.23"),
+                  /*beta*/TimeSpaceDependReal("4."));
 
   State state1, state2, state3, state4, state5;
   state1 << 7.55208555;

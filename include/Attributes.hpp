@@ -9,7 +9,6 @@
 
 typedef double real;
 
-typedef std::function<real(real,real)> TimeSpaceDependReal;
 
 typedef Eigen::Matrix<real,SystemAttributes::stateSize,1> State;
 typedef Eigen::Array<State,SystemAttributes::stencilSize*2+1,1> StencilArray;
