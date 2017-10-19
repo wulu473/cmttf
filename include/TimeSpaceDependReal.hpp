@@ -15,4 +15,17 @@ struct TimeSpaceDependRealWrapper
   exprtk::parser<real> parser;
 };
 
+class TimeSpaceDependReal : public std::function<real(real,real)>
+{
+  protected:
+    typedef std::function<real(real,real)> TSDRBase;
+  public:
+    TimeSpaceDependReal() : TSDRBase() {}
+    TimeSpaceDependReal(const TSDRBase& f) : TSDRBase(f) {}
+    TimeSpaceDependReal(const std::string&);
+
+  protected:
+    static TimeSpaceDependReal createFromString(const std::string&);
+};
+
 #endif

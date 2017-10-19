@@ -8,7 +8,7 @@ BOOST_AUTO_TEST_SUITE(SystemTest)
 BOOST_AUTO_TEST_CASE(FTest)
 {
   std::shared_ptr<System> sys = std::make_shared<System>(); 
-  sys->initialise(1.,1.1,1.2,111,0.12,[](real,real){return 1.23;},[](real,real){return 4.;});
+  sys->initialise(1.,1.1,1.2,111,0.12,TimeSpaceDependReal("1.23"),TimeSpaceDependReal("4"));
 
   State state1, state2, state3, state4, state5;
   state1 << 7.55208555e-05,4.52495383e-01;
@@ -34,8 +34,8 @@ BOOST_AUTO_TEST_CASE(JTest)
                   /*g1*/1.2,
                   /*g2*/111,
                   /*tau*/0.12,
-                  /*sigma*/[](real,real){return 1.23;},
-                  /*beta*/[](real,real){return 4.;});
+                  /*sigma*/TimeSpaceDependReal("1.23"),
+                  /*beta*/TimeSpaceDependReal("4."));
 
   State state1, state2, state3, state4, state5;
   state1 << 7.55208555e-05,4.52495383e-01;
@@ -84,8 +84,8 @@ BOOST_AUTO_TEST_CASE(J_num)
                   /*g1*/1.2,
                   /*g2*/111,
                   /*tau*/0.12,
-                  /*sigma*/[](real,real){return 1.23;},
-                  /*beta*/[](real,real){return 4.;});
+                  /*sigma*/TimeSpaceDependReal("1.23"),
+                  /*beta*/TimeSpaceDependReal("4."));
 
   State state1, state2, state3, state4, state5;
   state1 << 7.55208555,4.52495383;

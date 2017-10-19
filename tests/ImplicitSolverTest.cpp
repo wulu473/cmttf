@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_SUITE(ImplicitSolverTests)
 BOOST_AUTO_TEST_CASE(setupFunctionRand)
 {
   std::shared_ptr<System> sys = std::make_shared<System>(); 
-  sys->initialise(1.,1.1,1.2,111,0.12,[](real,real){return 1.23;},[](real,real){return 4.;});
+  sys->initialise(1.,1.1,1.2,111,0.12,TimeSpaceDependReal("1.23"),TimeSpaceDependReal("4."));
   ModuleList::addModule(sys);
 
   std::shared_ptr<Flat> flat = std::make_shared<Flat>();
@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE(setupFunctionRand)
 BOOST_AUTO_TEST_CASE(setupJacobianRand)
 {
   std::shared_ptr<System> sys = std::make_shared<System>(); 
-  sys->initialise(1.,1.1,1.2,111,0.12,[](real,real){return 1.23;},[](real,real){return 4.;});
+  sys->initialise(1.,1.1,1.2,111,0.12,TimeSpaceDependReal("1.23"),TimeSpaceDependReal("4."));
   ModuleList::addModule(sys);
 
   std::shared_ptr<Flat> flat = std::make_shared<Flat>();

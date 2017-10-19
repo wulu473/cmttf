@@ -119,47 +119,11 @@ std::list<std::string> Parameters::allActiveModules()
  * The return value is a std::function and can be evaluated by passing t and x (in that order)
  *
  */
-const std::function<real(real,real)>
+const TimeSpaceDependReal
 Parameters::getExpressionParameter(const std::string& name)
 {
-  std::string exp_str;
-  if ( !m_cfg.lookupValue(name,exp_str))
-  {
-    BOOST_LOG_TRIVIAL(error) << "Undefined parameter " << name;
-    exit(1);
-  }
-
-  std::shared_ptr<TimeSpaceDependRealWrapper> tsdr = std::make_shared<TimeSpaceDependRealWrapper>();
-
-  tsdr->symbolTable.add_variable("x",tsdr->x);
-  tsdr->symbolTable.add_variable("t",tsdr->t);
-
-  tsdr->expression.register_symbol_table(tsdr->symbolTable);
-
-  if(!tsdr->parser.compile(exp_str,tsdr->expression))
-  {
-    BOOST_LOG_TRIVIAL(error) << "Parsing error in expression: " << exp_str;
-
-    // More detailed diagnostics
-    for (std::size_t i = 0; i < tsdr->parser.error_count(); ++i)
-    {
-      exprtk::parser_error::type error = tsdr->parser.get_error(i);
-      BOOST_LOG_TRIVIAL(error) << "Error[" << i << "] Position: " << error.token.position 
-                               << " Type: [" << exprtk::parser_error::to_str(error.mode).c_str()
-                               << "] Msg: " << error.diagnostic.c_str();
-    }
-
-    exit(1);
-  }
-
-  std::function<real(real,real)> expression = [tsdr](real t, real x) 
-  {
-    tsdr->x = x;
-    tsdr->t = t;
-    return tsdr->expression.value();
-  };
-
-  return expression;
+  const std::string param_str = getParameter<std::string>(name);
+  return TimeSpaceDependReal(param_str);
 }
 
 //! Read an expression vector parameter from settings file. If not supplied abort.
