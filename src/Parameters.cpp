@@ -162,3 +162,54 @@ Parameters::getExpressionParameter(const std::string& name)
   return expression;
 }
 
+//! Read an expression vector parameter from settings file. If not supplied abort.
+/** The parameter assigned to name has to be a vector of string and can depend on time t and position x
+ *
+ * E.g. state = [ "1.225*exp(-x*x)" , "0." ]
+ *
+ * The return value is a std::vector of std::function and can be evaluated by passing t and x (in that order)
+ *
+ */
+const std::vector<std::function<real(real,real)> >
+Parameters::getExpressionVectorParameter(const std::string& name)
+{
+  std::vector<std::string> exp_str_vec = getVectorParameter<std::string>(name);
+
+  std::vector<std::function<real(real,real)> > expression_vec;
+  for(auto exp_str : exp_str_vec)
+  {
+    std::shared_ptr<TimeSpaceDependRealWrapper> tsdr = std::make_shared<TimeSpaceDependRealWrapper>();
+
+    tsdr->symbolTable.add_variable("x",tsdr->x);
+    tsdr->symbolTable.add_variable("t",tsdr->t);
+
+    tsdr->expression.register_symbol_table(tsdr->symbolTable);
+
+    if(!tsdr->parser.compile(exp_str,tsdr->expression))
+    {
+      BOOST_LOG_TRIVIAL(error) << "Parsing error in expression: " << exp_str;
+
+      // More detailed diagnostics
+      for (std::size_t i = 0; i < tsdr->parser.error_count(); ++i)
+      {
+        exprtk::parser_error::type error = tsdr->parser.get_error(i);
+        BOOST_LOG_TRIVIAL(error) << "Error[" << i << "] Position: " << error.token.position 
+                                 << " Type: [" << exprtk::parser_error::to_str(error.mode).c_str()
+                                 << "] Msg: " << error.diagnostic.c_str();
+      }
+
+      exit(1);
+    }
+
+    std::function<real(real,real)> expression = [tsdr](real t, real x) 
+    {
+      tsdr->x = x;
+      tsdr->t = t;
+      return tsdr->expression.value();
+    };
+    expression_vec.push_back(expression);
+  }
+
+  return expression_vec;
+}
+

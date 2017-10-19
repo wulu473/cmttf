@@ -58,6 +58,19 @@ const T ParameterisedModuleBase::getParameter(const std::string& variableName, c
   return Parameters::getParameter<T>(n.str(),defaultValue);
 }
 
+/** Specialisation for Expressions
+ *
+ * TODO Figure out why this does not work without the 'inline'
+*/
+template<>
+inline const std::vector<TimeSpaceDependReal> ParameterisedModuleBase::getVectorParameter(
+            const std::string& variableName) const
+{
+  std::ostringstream n;
+  n << name() << "." << variableName;
+  return Parameters::getExpressionVectorParameter(n.str());
+}
+
 template<typename T>
 const std::vector<T> ParameterisedModuleBase::getVectorParameter(const std::string& variableName) const
 {

@@ -25,6 +25,7 @@ class Parameters
     static const std::vector<T> getVectorParameter(const std::string&);
 
     static const TimeSpaceDependReal getExpressionParameter(const std::string&);
+    static const std::vector<TimeSpaceDependReal> getExpressionVectorParameter(const std::string&);
 
     static bool exists(const std::string&); 
     static int getLength(const std::string&);
