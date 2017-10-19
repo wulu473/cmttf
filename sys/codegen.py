@@ -192,18 +192,16 @@ class Roberts1998(System):
         # when we consider that the coefficients in Myers model
         # differ by a factor of 2/3
         self.F_disc = [ diff(eta(x)*u(x),x) - beta,
-                  +mu/rho*(2.467 - 0.3*diff(eta(x),x)**2)*u(x)/eta(x)**2 \
-                  -0.82245*sigma/rho*diff(eta(x),x,3) \
-                  -0.82245*g*(g1 + g2*diff(eta(x),x)) \
-                  -1.234*tau/rho/eta(x) \
-                  -4.093*mu/rho/eta(x)**1.323*diff(eta(x)**1.466*diff(u(x)/eta(x)**0.143,x),x) \
-                  +1.5041*u(x)/eta(x)**0.0985*diff(eta(x)**0.0985*u(x),x)]
+                  +mu*(2.467 - 0.3*diff(eta(x),x)**2)*u(x)/eta(x)**2 \
+                  -0.82245*sigma*diff(eta(x),x,3) \
+                  -0.82245*g*rho*(g1 + g2*diff(eta(x),x)) \
+                  -1.234*tau/eta(x) \
+                  -4.093*mu/eta(x)**1.323*diff(eta(x)**1.466*diff(u(x)/eta(x)**0.143,x),x) \
+                  +1.5041*u(x)*rho/eta(x)**0.0985*diff(eta(x)**0.0985*u(x),x)]
         self.F_disc = sp.Matrix(self.F_disc)
         self.F_disc = self.F_disc.subs(x,x_i)
 
-    def reflect(self,state):
-        state[1] *= -1.0
-        return state
+        self.F_disc_lin = [0,0]
 
 class Roberts1998Reduce(System):
     h, u, k, x = sp.symbols("h u k x")

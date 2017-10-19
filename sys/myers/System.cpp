@@ -103,6 +103,14 @@ J_lin(0,4) = (1.0L/24.0L)*sigma*pow(u0_2_0, 3)/(pow(dx, 4)*mu) + (1.0L/8.0L)*sig
   return J_lin;
 }
 
+//! Return a factor the time derivative is scaled with
+State System::factorTimeDeriv() const
+{
+  State factor;
+  factor.fill(1.);
+  return factor;
+}
+
 void System::initialise(const real mu, const real sigma, const real g1, const real g2,
           const TimeSpaceDependReal tau, const TimeSpaceDependReal beta)
 {

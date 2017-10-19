@@ -19,6 +19,8 @@ class System : public SystemBase
     StencilJacobian JLinear(const StencilArray& states, const StencilArray& states_old,
                                         const real dx, const real x, const real t) const;
 
+    State factorTimeDeriv() const;
+
     void initialise(const real mu, const real sigma, const real g1, const real g2,
                     const TimeSpaceDependReal tau, const TimeSpaceDependReal beta);
 

@@ -22,6 +22,8 @@ class System : public SystemBase
                             const real /*dx*/, const real /*x*/, const real /*t*/) const
         {throw NotImplemented();}
 
+    State factorTimeDeriv() const;
+
     void initialise(const real mu, const real rho, const real g1, const real g2, const real sigma,
                     const TimeSpaceDependReal tau, const TimeSpaceDependReal beta);
 

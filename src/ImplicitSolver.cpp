@@ -47,6 +47,8 @@ void ImplicitSolver::function(const Vector& states_old, const Vector& states_new
 
   const real dx = domain->dx();
 
+  const State factorDt = system->factorTimeDeriv();
+
   const int stenS = SystemAttributes::stencilSize;
   const int statS = SystemAttributes::stateSize;
 
@@ -93,7 +95,7 @@ void ImplicitSolver::function(const Vector& states_old, const Vector& states_new
 
     for(unsigned int e=0;e<SystemAttributes::stateSize;e++)
     {
-      f[i*statS+e] = states_new[i*statS+e] - states_old[i*statS+e] + dt*(m_alpha*F_new[e] + (1.-m_alpha)*F_old[e]);
+      f[i*statS+e] = factorDt[e]*(states_new[i*statS+e] - states_old[i*statS+e]) + dt*(m_alpha*F_new[e] + (1.-m_alpha)*F_old[e]);
     }
   }
 }
@@ -111,6 +113,7 @@ void ImplicitSolver::jacobian(const Vector& states, const real dt, const real t,
   assert((unsigned int)(states.size()) == domain->cells()*statS);
 
   const real dx = domain->dx();
+  const State factorDt = system->factorTimeDeriv();
 
   typedef Eigen::Triplet<real> Triplet;
   std::vector<Triplet> triplets;
@@ -189,7 +192,7 @@ void ImplicitSolver::jacobian(const Vector& states, const real dt, const real t,
           const int J_row = cell*statS+i_state;
           if(J_col == J_row)
           {
-            deriv += 1.0; // Take into account that the state appears in the discr time deriv
+            deriv += factorDt[i_state]; // Take into account that the state appears in the discr time deriv
           }
           const Triplet trip = Triplet(J_row,J_col,deriv);
           triplets.push_back(trip);
