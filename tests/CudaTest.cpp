@@ -12,13 +12,24 @@
 #include <iostream>
 
 #include "Log.hpp"
+#include "CUDA.hpp"
 
 typedef double real;
 typedef Eigen::SparseMatrix<real> SpMat;
 typedef Eigen::SparseMatrix<real,Eigen::RowMajor> SpMatRowMaj;
 typedef Eigen::Triplet<real> T;
 
-BOOST_AUTO_TEST_SUITE(CUDA)
+BOOST_AUTO_TEST_SUITE(CUDATest)
+
+BOOST_AUTO_TEST_CASE(FreeMemoryTest)
+{
+  auto freeMem = CUDA::freeMemory();
+  for(auto devFreeMem : freeMem)
+  {
+    BOOST_LOG_TRIVIAL(info) << "Device " << devFreeMem.first << " free memory: " << devFreeMem.second;
+  }
+  BOOST_LOG_TRIVIAL(info) << "Device with most free memory: " << CUDA::deviceMostFreeMemory();
+}
 
 BOOST_AUTO_TEST_CASE(Nvidia_example_csc)
 {

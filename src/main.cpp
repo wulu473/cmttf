@@ -11,6 +11,7 @@
 #include "InitialCondition.hpp"
 #include "SystemSolver.hpp"
 #include "Git.hpp"
+#include "CUDA.hpp"
 
 
 int main (int argc, char *argv[])
@@ -20,6 +21,7 @@ int main (int argc, char *argv[])
   desc.add_options()
     ("help", "produce help message")
     ("log-level", boost::program_options::value<std::string>(), "set log level")
+    ("set-device", boost::program_options::value<unsigned int>(), "set CUDA device")
     ("version", "print version")
     ("settings-file", boost::program_options::value<std::string>(), "settings file")
     ;
@@ -56,6 +58,14 @@ int main (int argc, char *argv[])
     Log::setLevel(Log::stringToLevel(logLevel));
   }
 
+  // Set CUDA device
+  CUDA::setDevice(CUDA::deviceMostFreeMemory());
+  if (vm.count("set-device"))
+  {
+    const unsigned int device = vm["set-device"].as<unsigned int>();
+    CUDA::setDevice(device);
+  }
+  BOOST_LOG_TRIVIAL(info) << "Running on CUDA device " << CUDA::device();
 
   std::string settingsFileName;
   if (vm.count("settings-file"))

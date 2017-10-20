@@ -23,7 +23,7 @@ CUDAFLAGS+=-m64 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,cod
 
 INCLUDES+=-I./include -I./ -I./sys/$(SYSTEM)/
 
-LDLIBS+=-lboost_unit_test_framework -lboost_log -lcublas -lcusolver -lcusparse -lboost_program_options -lconfig++
+LDLIBS+=-lboost_unit_test_framework -lboost_log -lcublas -lcusolver -lcusparse -lcuda -lboost_program_options -lconfig++
 
 TESTS:=$(wildcard tests/*.cpp)
 TESTOBJS:=$(addprefix objects/$(SYSTEM)/,$(TESTS:.cpp=.o))
