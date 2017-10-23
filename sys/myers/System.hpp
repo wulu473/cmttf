@@ -11,20 +11,21 @@
 class System : public SystemBase
 {
   public:
-    State F(const StencilArray& states, const real dx, const real x, const real t) const;
-    State FLinear(const StencilArray& states, const StencilArray& states_old,
-                              const real dx, const real x, const real t) const;
+    virtual State F(const StencilArray& states, const real dx, const real x, const real t) const;
+    virtual State FLinear(const StencilArray& states, const StencilArray& states_old,
+                          const real dx, const real x, const real t) const;
 
-    StencilJacobian J(const StencilArray& states, const real dx, const real x, const real t) const;
-    StencilJacobian JLinear(const StencilArray& states, const StencilArray& states_old,
+    virtual StencilJacobian J(const StencilArray& states, const real dx,
+                              const real x, const real t) const;
+    virtual StencilJacobian JLinear(const StencilArray& states, const StencilArray& states_old,
                                         const real dx, const real x, const real t) const;
-
-    State factorTimeDeriv() const;
 
     void initialise(const real mu, const real sigma, const real g1, const real g2,
                     const TimeSpaceDependReal tau, const TimeSpaceDependReal beta);
 
     void initialiseFromFile();
+
+    virtual bool checkValid(State& state) const;
 
   private:
     // Space and time dependent parameters

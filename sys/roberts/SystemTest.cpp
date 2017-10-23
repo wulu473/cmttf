@@ -99,4 +99,22 @@ BOOST_AUTO_TEST_CASE(J_num)
   TestUtility::SystemTest::checkJacobianNumerically(sys,u,dx,x,t,1e-10);
 }
 
+BOOST_AUTO_TEST_CASE(checkValidTest)
+{
+  std::shared_ptr<System> sys = std::make_shared<System>(); 
+  State valid, invalid;
+  valid << 1., 0.;
+  invalid << -1., -1.;
+
+  // Check a valid state is the same
+  BOOST_CHECK(sys->checkValid(valid));
+  BOOST_CHECK_CLOSE(valid[0], 1., 1e-10);
+  BOOST_CHECK_CLOSE(valid[1], 0., 1e-10);
+
+  // Check if an invalid state is corrected to a positive one
+  BOOST_CHECK(sys->checkValid(invalid));
+  BOOST_CHECK(invalid[0] > 0.);
+  BOOST_CHECK_CLOSE(invalid[1], -1., 1e-10);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

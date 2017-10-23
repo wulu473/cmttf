@@ -115,3 +115,11 @@ void System::initialiseFromFile()
 
   this->initialise(mu,rho,g[0],g[1],sigma,tau,beta);
 }
+
+bool System::checkValid(Ref<State> state) const
+{
+  if(state[0] <= 0.)
+  { state[0] = std::numeric_limits<real>::epsilon();
+  }
+  return true;
+}

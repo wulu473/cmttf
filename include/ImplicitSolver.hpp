@@ -26,6 +26,8 @@ class ImplicitSolver : public TimeIntegrator
 
     virtual void advance(std::shared_ptr<DataPatch> states, const real dt, const real t) const;
 
+    virtual bool checkValid(Vector& states) const;
+
   protected:
 };
 

@@ -156,6 +156,45 @@ BOOST_AUTO_TEST_CASE(setupJacobianRand)
 
   ModuleList::clear();
 }
+
+
+BOOST_AUTO_TEST_CASE(checkValidTest)
+{
+  std::shared_ptr<System> sys = std::make_shared<System>(); 
+  sys->initialise(1.,1.1,1.2,111,0.12,TimeSpaceDependReal("1.23"),TimeSpaceDependReal("4."));
+  ModuleList::addModule(sys);
+
+  std::shared_ptr<Flat> flat = std::make_shared<Flat>();
+  flat->initialise(5,0.,0.5);
+  ModuleList::addModule(flat);
+
+  ImplicitSolver::Vector states(10);
+  states     <<  7.55208555e-05,4.52495383e-01,
+                 1.00000000e-06,0.00000000e+00,
+                -2.73342916e-05,1.36632144e-01,
+                 5.62725541e-05,5.17095798e-01,
+                 9.07299124e-05,3.76788153e-01;
+
+
+  std::shared_ptr<ImplicitSolver> solver = std::make_shared<ImplicitSolver>();
+  solver->initialise(1.0);
+
+  BOOST_CHECK(solver->checkValid(states));
+
+  BOOST_CHECK_CLOSE(states[0], 7.55208555e-05, 1e-10);
+  BOOST_CHECK_CLOSE(states[1], 4.52495383e-01, 1e-10);
+  BOOST_CHECK_CLOSE(states[2], 1.00000000e-06, 1e-10);
+  BOOST_CHECK_CLOSE(states[3], 0.00000000e+00, 1e-10);
+  BOOST_CHECK(states[4] > 0. ); // Negative height should have been corrected
+  BOOST_CHECK_CLOSE(states[5], 1.36632144e-01, 1e-10);
+  BOOST_CHECK_CLOSE(states[6], 5.62725541e-05, 1e-10);
+  BOOST_CHECK_CLOSE(states[7], 5.17095798e-01, 1e-10);
+  BOOST_CHECK_CLOSE(states[8], 9.07299124e-05, 1e-10);
+  BOOST_CHECK_CLOSE(states[9], 3.76788153e-01, 1e-10);
+
+  ModuleList::clear();
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 #endif

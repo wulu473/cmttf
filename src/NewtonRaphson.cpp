@@ -23,7 +23,8 @@ std::string NewtonRaphson::moduleName() const
  * x [in,out] Guess and result
  */
 void NewtonRaphson::solveSparse(const std::function<void(const EVector&, EVector&)>& fun, 
-        const std::function<void(const EVector&, ESpMatRowMaj&)>& jac, EVector& x) const
+        const std::function<void(const EVector&, ESpMatRowMaj&)>& jac, EVector& x,
+        const std::function<bool(EVector&)>& restrictDomain) const
 {
 #ifdef LOGTIMINGS
   BOOST_LOG_TRIVIAL(warning) << "LOGTIMINGS is active. Deactivated for production runs.";
@@ -80,6 +81,7 @@ void NewtonRaphson::solveSparse(const std::function<void(const EVector&, EVector
   bool singular = false;
   do 
   {
+
     // Compute guess for x
 #ifdef LOGTIMINGS
     BOOST_LOG_TRIVIAL(debug) << "Starting: Setting up function and matrix";
@@ -174,6 +176,11 @@ void NewtonRaphson::solveSparse(const std::function<void(const EVector&, EVector
     if (d_csrValA   ) { checkCudaErrors(cudaFree(d_csrValA)); }
     if (d_csrColIndA) { checkCudaErrors(cudaFree(d_csrColIndA)); }
 
+    if(!restrictDomain(x))
+    {
+      BOOST_LOG_TRIVIAL(error) << "A Newton Raphson guess has been found which is not in the expected domain. This usually points to bad starting point for the procedure";
+      exit(33); 
+    }
 
     // Check for convergence
     // Use criteria by Knoll(2004)

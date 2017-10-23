@@ -9,7 +9,7 @@
 
 typedef double real;
 
-
+using Eigen::Ref;
 typedef Eigen::Matrix<real,SystemAttributes::stateSize,1> State;
 typedef Eigen::Array<State,SystemAttributes::stencilSize*2+1,1> StencilArray;
 typedef Eigen::Array<real,SystemAttributes::stateSize,SystemAttributes::stateSize*(SystemAttributes::stencilSize*2+1)> StencilJacobian;

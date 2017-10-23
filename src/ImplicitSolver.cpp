@@ -2,6 +2,7 @@
 
 #include "ImplicitSolver.hpp"
 #include "Domain.hpp"
+#include "Log.hpp"
 
 #include "ModuleList.hpp"
 #include "System.hpp"
@@ -235,11 +236,14 @@ void ImplicitSolver::advance(std::shared_ptr<DataPatch> states, const real dt, c
     auto f = std::bind(&ImplicitSolver::function,*this,states_vec_old,std::placeholders::_1,c_dt,t+c_t,std::placeholders::_2);
     auto J = std::bind(&ImplicitSolver::jacobian,*this,std::placeholders::_1,c_dt,t+c_t,std::placeholders::_2);
 
+    // Restrict the search domain to valid states
+    auto restrictDomain = std::bind(&ImplicitSolver::checkValid, *this, std::placeholders::_1);
+
     bool converged = false;
     try
     {
       // Solve system
-      solver->solveSparse(f,J,states_vec_new);
+      solver->solveSparse(f, J, states_vec_new, restrictDomain);
       converged = true;
     }
     catch(RootFinder::ConvergenceException e)
@@ -269,4 +273,27 @@ void ImplicitSolver::advance(std::shared_ptr<DataPatch> states, const real dt, c
   } while (c_t < dt);
 }
 
+
+bool ImplicitSolver::checkValid(Vector& states) const
+{
+  const int statS = SystemAttributes::stateSize;
+  static const std::shared_ptr<const System> system = ModuleList::uniqueModule<System>();
+
+  assert((states.size() % statS) == 0);
+  
+  const int numCells = states.size()/statS;
+
+  for(int cell=0;cell<numCells;cell++)
+  {
+    // Do this as a map to avoid copying
+    Eigen::Map<State> state = Eigen::Map<State>(&(states[statS*cell]));
+
+    if(!system->checkValid(state))
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
 
