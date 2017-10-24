@@ -12,7 +12,8 @@ class NewtonTrustRegion : public RootFinder
     NewtonTrustRegion() {};
 
     virtual void solveSparse(const std::function<void(const EVector&, EVector&)>& f, 
-        const std::function<void(const EVector&, ESpMatRowMaj&)>& J, EVector& x) const;
+        const std::function<void(const EVector&, ESpMatRowMaj&)>& J, EVector& x,
+        const std::function<bool(EVector&)>& restrictDomain = RootFinder::allValid) const;
 };
 
 #endif

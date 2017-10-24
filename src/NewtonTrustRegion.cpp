@@ -24,7 +24,8 @@ std::string NewtonTrustRegion::moduleName() const
  * x [in,out] Guess and result
  */
 void NewtonTrustRegion::solveSparse(const std::function<void(const EVector&, EVector&)>& fun, 
-        const std::function<void(const EVector&, ESpMatRowMaj&)>& jac, EVector& x) const
+        const std::function<void(const EVector&, ESpMatRowMaj&)>& jac, EVector& x,
+        const std::function<bool(EVector&)>& restrictDomain) const
 {
   const unsigned int N = x.size();
 
@@ -103,7 +104,14 @@ void NewtonTrustRegion::solveSparse(const std::function<void(const EVector&, EVe
 
 
     EVector fNew = f; // Hopefuly this copies
-    fun(x+p_k,fNew);
+    EVector xNew = x+p_k;
+    if(!restrictDomain(xNew))
+    {
+      BOOST_LOG_TRIVIAL(error) << "A guess has been found which is not in the expected domain. This usually points to bad starting point for the procedure";
+      exit(33); // Consider throwing exception instead
+    }
+    p_k = xNew - x;
+    fun(xNew,fNew);
     const real rho_k_denom = f.squaredNorm() - (f + A*p_k).squaredNorm();
     const real rho_k = (f.squaredNorm() - fNew.squaredNorm())/rho_k_denom;
 
@@ -125,13 +133,12 @@ void NewtonTrustRegion::solveSparse(const std::function<void(const EVector&, EVe
 
     if (rho_k > eta)
     {
-      x += p_k;
+      x = xNew;
     }
     else
     {
       // x_{n+1} = x_{n}
     }
-
 
     // Check for convergence
     // Use criteria by Knoll(2004)
