@@ -285,6 +285,12 @@ bool ImplicitSolver::checkValid(Vector& states) const
   
   const int numCells = states.size()/statS;
 
+  if(!states.allFinite())
+  {
+    BOOST_LOG_TRIVIAL(error) << "Non-finite states found. It cannot be recovered from these states.";
+    return false;
+  }
+
   for(int cell=0;cell<numCells;cell++)
   {
     // Do this as a map to avoid copying

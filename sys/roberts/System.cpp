@@ -119,7 +119,14 @@ void System::initialiseFromFile()
 bool System::checkValid(Ref<State> state) const
 {
   if(state[0] <= 0.)
-  { state[0] = std::numeric_limits<real>::epsilon();
+  {
+#ifdef DEBUG
+    BOOST_LOG_TRIVIAL(debug) << "Non-physical state found: " << state.transpose();
+#endif
+    state[0] = std::numeric_limits<real>::epsilon();
+#ifdef DEBUG
+    BOOST_LOG_TRIVIAL(debug) << "Corrected to " << state.transpose(); 
+#endif
   }
   return true;
 }

@@ -32,9 +32,9 @@ void NewtonTrustRegion::solveSparse(const std::function<void(const EVector&, EVe
   // Algorithm 11.4 from Numerical Optimization by J. Nocedal, S. J. Wright
   // using the dog leg method
 
-  const unsigned int maxIter = 100;
+  const unsigned int maxIter = 10000;
 
-  const real deltaMax = 4*x.norm();
+  const real deltaMax = 1e5*x.norm();
   const real eta = 0.1;
 
   real delta = deltaMax/4; // trust region size
@@ -63,6 +63,7 @@ void NewtonTrustRegion::solveSparse(const std::function<void(const EVector&, EVe
 
     if(fabs(pC_k.squaredNorm() - delta*delta) < std::numeric_limits<real>::epsilon())
     {
+      //
       p_k = pC_k; 
     }
     else
@@ -103,7 +104,7 @@ void NewtonTrustRegion::solveSparse(const std::function<void(const EVector&, EVe
     }
 
 
-    EVector fNew = f; // Hopefuly this copies
+    EVector fNew = f; // Hopefully this copies
     EVector xNew = x+p_k;
     if(!restrictDomain(xNew))
     {
@@ -115,24 +116,46 @@ void NewtonTrustRegion::solveSparse(const std::function<void(const EVector&, EVe
     const real rho_k_denom = f.squaredNorm() - (f + A*p_k).squaredNorm();
     const real rho_k = (f.squaredNorm() - fNew.squaredNorm())/rho_k_denom;
 
+#ifdef DEBUG
+      BOOST_LOG_TRIVIAL(debug) << "Metric for approximation rho = " << rho_k;
+#endif
+
     if (rho_k < 1./4.)
     {
       delta = 1./4.*p_k.norm();
+#ifdef DEBUG
+      BOOST_LOG_TRIVIAL(debug) << "The model function is not a good approximation. Reducing trust region to delta = " << delta;
+#endif
     }
     else
     {
-      if(fabs(p_k.squaredNorm() - delta*delta) < std::numeric_limits<real>::epsilon())
+      if(rho_k > 3./4. && fabs(p_k.norm() - delta) < sqrt(std::numeric_limits<real>::epsilon()))
       {
         delta = std::min(2*delta, deltaMax);
+#ifdef DEBUG
+        if(fabs(delta - deltaMax) < std::numeric_limits<real>::epsilon())
+        {
+          BOOST_LOG_TRIVIAL(debug) << "Trust region size has reached maximum size. Consider increasing value of deltaMax";
+        }
+        else
+        {
+          BOOST_LOG_TRIVIAL(debug) << "The model function is an excellent approximation. Increasing trust region size to delta = " << delta; 
+        }
+#endif
       }
       else
       {
         // delta_{n+1} = delta_{n}
+#ifdef DEBUG
+        BOOST_LOG_TRIVIAL(debug) << "The model function is a good approximation. Keeping trust region size at delta = " << delta;
+#endif
       }
     }
 
+    real dxRel = std::numeric_limits<real>::max();
     if (rho_k > eta)
     {
+      dxRel = p_k.norm()/x.norm();
       x = xNew;
     }
     else
@@ -147,7 +170,12 @@ void NewtonTrustRegion::solveSparse(const std::function<void(const EVector&, EVe
     fun(x,f);
     const real res2 = f.squaredNorm()/f02;
 
-    if( res2 < pow(std::numeric_limits<real>::epsilon(),2) )
+
+#ifdef DEBUG
+    BOOST_LOG_TRIVIAL(debug) << "NewtonTrustRegion: Iteration: " << i << " res = " << sqrt(res2) << " dxRel = " << dxRel;
+#endif
+
+    if( res2 < 1e-24 || dxRel < 1e-12 )
     {
       converged = true;  
     }
