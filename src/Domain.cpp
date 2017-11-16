@@ -21,60 +21,53 @@ void Domain::initialise()
 }
 
 //! Coordinate of cell centre
-real Domain::x(const int) const
+Coord Domain::x(const real) const
 {
   BOOST_LOG_TRIVIAL(error) << "Domain::x called from base class.";
   throw InheritanceException();
-  return 0;
+  return Coord(0.);
+}
+
+//! Surface coordinate
+real Domain::s(const int i) const
+{
+  return minS() + (i - begin())*ds() + ds()/2.;
 }
 
 //! Grid spacing
-real Domain::dx() const
+real Domain::ds() const
 {
-  BOOST_LOG_TRIVIAL(error) << "Domain::dx called from base class.";
-  throw InheritanceException();
-  return 0;
+  return (maxS()-minS())/cells();
 }
 
-//! Coordinate of left edge of the domain
-real Domain::minX() const
+//! Coordinate of left edge of surface
+real Domain::minS() const
 {
-  BOOST_LOG_TRIVIAL(error) << "Domain::minX called from base class.";
-  throw InheritanceException();
-  return 0;
-
+  return m_minS;
 }
 
-//! Coordinate of right edge of the domain
-real Domain::maxX() const
+//! Coordinate of right edge of surface
+real Domain::maxS() const
 {
-  BOOST_LOG_TRIVIAL(error) << "Domain::maxX called from base class.";
-  throw InheritanceException();
-  return 0;
+  return m_maxS;
 }
 
 //! Index of the left most cell
 int Domain::begin() const
 {
-  BOOST_LOG_TRIVIAL(error) << "Domain::begin called from base class.";
-  throw InheritanceException();
   return 0;
 }
 
 //! Index of the right most cell +1
 int Domain::end() const
 {
-  BOOST_LOG_TRIVIAL(error) << "Domain::end called from base class.";
-  throw InheritanceException();
-  return 0;
+  return m_nCells;
 }
 
 //! Number of cells of computational domain
 unsigned int Domain::cells() const
 {
-  BOOST_LOG_TRIVIAL(error) << "Domain::cells called from base class.";
-  throw InheritanceException();
-  return 0;
+  return m_nCells;
 }
 
 

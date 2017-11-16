@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(setData)
   ModuleList::addModule(flat);
 
   Expression::StateExpr expr; 
-  expr[0] = TimeSpaceDependReal("x < 0.2 ? 0. : 1.");
+  expr[0] = TimeSpaceDependReal("s < 0.2 ? 0. : 1.");
   expr[1] = TimeSpaceDependReal("2.");
 
   Expression ic;

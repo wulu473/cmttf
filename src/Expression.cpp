@@ -26,10 +26,10 @@ void Expression::setData(std::shared_ptr<DataPatch> data) const
 
   for(unsigned int cell=0;cell<data->rows();cell++)
   {
-    const real x = domain->x(cell);
+    const real s = domain->s(cell);
     for(unsigned int i=0; i<SystemAttributes::stateSize;i++)
     {
-      (*data)(cell,i) = m_state[i](0.,x); // t = 0.
+      (*data)(cell,i) = m_state[i](0.,s); // t = 0.
     }
   }
 }

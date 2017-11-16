@@ -8,7 +8,7 @@
 
 struct TimeSpaceDependRealWrapper
 {
-  real t, x;
+  real t, s;
 
   exprtk::symbol_table<real> symbolTable;
   exprtk::expression<real> expression;

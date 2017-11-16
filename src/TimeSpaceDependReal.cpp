@@ -14,7 +14,7 @@ TimeSpaceDependReal TimeSpaceDependReal::createFromString(const std::string& exp
 {
   std::shared_ptr<TimeSpaceDependRealWrapper> tsdr = std::make_shared<TimeSpaceDependRealWrapper>();
 
-  tsdr->symbolTable.add_variable("x",tsdr->x);
+  tsdr->symbolTable.add_variable("s",tsdr->s);
   tsdr->symbolTable.add_variable("t",tsdr->t);
 
   tsdr->expression.register_symbol_table(tsdr->symbolTable);
@@ -35,9 +35,9 @@ TimeSpaceDependReal TimeSpaceDependReal::createFromString(const std::string& exp
     exit(1);
   }
 
-  TSDRBase expression = [tsdr](real t, real x) 
+  TSDRBase expression = [tsdr](real t, real s) 
   {
-    tsdr->x = x;
+    tsdr->s = s;
     tsdr->t = t; return tsdr->expression.value();
   };
 

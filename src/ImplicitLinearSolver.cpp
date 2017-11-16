@@ -44,7 +44,7 @@ void ImplicitLinearSolver::function(const Vector& states_old, const Vector& stat
   assert(states_old.size() == states_new.size());
   assert(states_old.size() == f.size());
 
-  const real dx = domain->dx();
+  const real ds = domain->ds();
   const State factorDt = system->factorTimeDeriv();
 
   const int stenS = SystemAttributes::stencilSize;
@@ -52,7 +52,7 @@ void ImplicitLinearSolver::function(const Vector& states_old, const Vector& stat
 
   for(int i=domain->begin();i<domain->end();i++)
   {
-    const real x = domain->x(i);
+    const real s = domain->s(i);
 
     StencilArray stencil_old;
     StencilArray stencil_new;
@@ -87,8 +87,8 @@ void ImplicitLinearSolver::function(const Vector& states_old, const Vector& stat
         }
       }
     }
-    const State F_old = system->F(stencil_old,dx,x,t);
-    const State F_new = system->FLinear(stencil_new,stencil_old,dx,x,t);
+    const State F_old = system->F(stencil_old,ds,s,t);
+    const State F_new = system->FLinear(stencil_new,stencil_old,ds,s,t);
     
 
     for(unsigned int e=0;e<SystemAttributes::stateSize;e++)
@@ -110,7 +110,7 @@ void ImplicitLinearSolver::jacobian(const Vector& states_old, const Vector& stat
   assert((unsigned int)(J.cols()) == domain->cells()*statS);
   assert((unsigned int)(states_new.size()) == domain->cells()*statS);
 
-  const real dx = domain->dx();
+  const real ds = domain->ds();
   const State factorDt = system->factorTimeDeriv();
 
   typedef Eigen::Triplet<real> Triplet;
@@ -120,7 +120,7 @@ void ImplicitLinearSolver::jacobian(const Vector& states_old, const Vector& stat
 
   for(int cell=domain->begin();cell<domain->end();cell++)
   {
-    const real x = domain->x(cell);
+    const real s = domain->s(cell);
 
     StencilArray stencil_old, stencil_new;
 
@@ -177,7 +177,7 @@ void ImplicitLinearSolver::jacobian(const Vector& states_old, const Vector& stat
       }
     }
 
-    const StencilJacobian J_loc = system->JLinear(stencil_new,stencil_old,dx,x,t);
+    const StencilJacobian J_loc = system->JLinear(stencil_new,stencil_old,ds,s,t);
 
     // J_loc is column major so iterate over rows faster
     for(unsigned int J_loc_col=0;J_loc_col<statS*(stenS*2+1);J_loc_col++)

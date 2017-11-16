@@ -12,17 +12,38 @@ class Domain : public ParameterisedModuleBase
 
     virtual void initialise();
 
-    virtual real x(const int) const ;
-    virtual real dx() const ;
-    virtual real minX() const ; 
-    virtual real maxX() const ;
-    virtual int begin() const ;
+    //! Return coordinate in embedding space
+    virtual Coord x(const real s) const;
+
+    //! Return surface coordinate of cell
+    virtual real s(const int i) const;
+
+    //! Return spacing along surface
+    virtual real ds() const ;
+
+    //! Return lower bound of domain on surface
+    virtual real minS() const ; 
+
+    //! Return upper bound of domain on surface
+    virtual real maxS() const ;
+
+    //! Return index of first cell
+    virtual int begin() const;
+
+    //! Return last valid index + 1
     virtual int end() const;
+
+    //! Return number of cells
     virtual unsigned int cells() const;
 
     Domain();
     virtual ~Domain();
 
   protected:
+    //! number of cells
+    unsigned int m_nCells;
+
+    //! bounds of surface coords
+    real m_minS, m_maxS;
 };
 #endif 

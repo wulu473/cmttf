@@ -70,6 +70,7 @@ void Gnuplot::output(const std::shared_ptr<DataPatch> data, const real t,
     file << "# version: " << GIT_ID << std::endl;
     file << "# t = " << t << std::endl;
     file << "# 1: x" << std::endl;
+    file << "# 2: y" << std::endl;
     /*
      * TODO Print variable names
     const std::vector<std::string> names = ModuleList::uniqueModule<System>()->variableNames();
@@ -79,9 +80,10 @@ void Gnuplot::output(const std::shared_ptr<DataPatch> data, const real t,
 
     for(unsigned int cell=0; cell<data->rows();cell++)
     {
-      const real x = domain->x(cell);
+      const real s = domain->s(cell);
+      const Coord x = domain->x(s);
 
-      file << std::setprecision(std::numeric_limits<real>::digits10) << x << " ";
+      file << std::setprecision(std::numeric_limits<real>::digits10) << x[0] << " " << x[1] << " ";
       for(unsigned int i=0; i<SystemAttributes::stateSize;i++)
       {
         file << std::setprecision(std::numeric_limits<real>::digits10) << (*data)(cell,i) << " ";
