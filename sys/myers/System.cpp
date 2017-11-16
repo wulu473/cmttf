@@ -127,7 +127,7 @@ void System::initialiseFromFile()
   this->initialise(mu,sigma,g[0],g[1],tau,beta);
 }
 
-bool System::checkValid(State& state) const
+bool System::checkValid(Ref<State> state) const
 {
   if(state[0] <= 0.)
   {

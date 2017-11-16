@@ -25,7 +25,7 @@ class System : public SystemBase
 
     void initialiseFromFile();
 
-    virtual bool checkValid(State& state) const;
+    virtual bool checkValid(Ref<State> state) const;
 
   private:
     // Space and time dependent parameters
