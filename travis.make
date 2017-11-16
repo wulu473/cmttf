@@ -3,12 +3,12 @@
 
 # Not yet working
 
-CUDA_PATH=/lsc/opt/cuda-8.0
+CUDA_PATH=/usr/local/cuda-8.0
 
 CXX=g++
 NVCC=nvcc -ccbin $(CXX)
 
-INCLUDES=-isystem=/usr/local/include/eigen3 -isystem=/home/raid/lw473/opt/expertk-2.7/
+INCLUDES=-isystem=/usr/local/include/eigen3
 
 # Everything should be in the default
 LDFLAGS=

@@ -14,9 +14,7 @@ travis_retry sudo apt-get update -qq
 export CUDA_APT=${CUDA:0:3}
 export CUDA_APT=${CUDA_APT/./-}
 travis_retry sudo apt-get install -y cuda-drivers cuda-core-${CUDA_APT} cuda-cudart-dev-${CUDA_APT}
-if [ ${CUDA_INSTALL_EXTRA_LIBS:-1} -ne 0 ]; then
-  travis_retry sudo apt-get install -y cuda-cufft-dev-${CUDA_APT} cuda-cublas-dev-${CUDA_APT} cuda-cusparse-dev-${CUDA_APT} cuda-cusolver-dev-${CUDA_APT}
-fi
+travis_retry sudo apt-get install -y cuda-cufft-dev-${CUDA_APT} cuda-cublas-dev-${CUDA_APT} cuda-cusparse-dev-${CUDA_APT} cuda-cusolver-dev-${CUDA_APT} cuda-samples-{$CUDA_APT}
 travis_retry sudo apt-get clean
 export CUDA_HOME=/usr/local/cuda-${CUDA:0:3}
 export LD_LIBRARY_PATH=${CUDA_HOME}/nvvm/lib64:${LD_LIBRARY_PATH}
