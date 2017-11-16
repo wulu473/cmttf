@@ -1,0 +1,18 @@
+sudo: required
+
+before_install:
+  - sudo apt-get install libboost-all-dev
+
+# Enable C++ support
+language: cpp
+
+# Compiler selection
+compiler:
+  - gcc
+
+
+# Build steps
+script:
+  - make -f travis.make SYSTEM=roberts
+  - make -f travis.make SYSTEM=myers
+
