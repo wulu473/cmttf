@@ -4,6 +4,9 @@
 
 #include "NewtonRaphson.hpp"
 
+#ifdef DISABLE_CUDA
+#warning CUDA is diabled. No Newton Raphson tests are run.
+#else
 
 BOOST_AUTO_TEST_SUITE(NewtonRaphsonTests)
 
@@ -91,3 +94,5 @@ BOOST_AUTO_TEST_CASE(linear)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+#endif

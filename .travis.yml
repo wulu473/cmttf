@@ -18,4 +18,6 @@ compiler:
 script:
   - make -f travis.make SYSTEM=roberts
   - make -f travis.make SYSTEM=myers
+  - make -f travis.make SYSTEM=roberts unit-tests
+  - make -f travis.make SYSTEM=myers unit-tests
 
