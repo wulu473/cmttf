@@ -18,6 +18,12 @@ class Domain : public ParameterisedModuleBase
     //! Return surface coordinate of cell
     virtual real s(const int i) const;
 
+    //! Return surface curvature
+    virtual real kappa(const real s) const;
+
+    //! Return derivative of surface curvature
+    virtual real dKappa_ds(const real s) const;
+
     //! Return spacing along surface
     virtual real ds() const ;
 

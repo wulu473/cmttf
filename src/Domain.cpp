@@ -34,7 +34,22 @@ real Domain::s(const int i) const
   return minS() + (i - begin())*ds() + ds()/2.;
 }
 
-//! Grid spacing
+//! Return surface curvature
+real Domain::kappa(const real /*s*/) const
+{
+  BOOST_LOG_TRIVIAL(error) << "Domain::kappa called from base class.";
+  throw InheritanceException();
+  return 0.;
+}
+
+//! Return derivative of surface curvature
+real Domain::dKappa_ds(const real /*s*/) const
+{
+  BOOST_LOG_TRIVIAL(error) << "Domain::dKappa_ds called from base class.";
+  throw InheritanceException();
+  return 0.;
+}
+
 real Domain::ds() const
 {
   return (maxS()-minS())/cells();
