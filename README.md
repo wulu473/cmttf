@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/wulu473/cmttf.svg?token=CQhcTo9qCd3kF5dQ2izE&branch=master)](https://travis-ci.com/wulu473/cmttf)
 
 Centre Manifold Theory based thin film simulations
 ==================================================

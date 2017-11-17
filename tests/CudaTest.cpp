@@ -14,6 +14,10 @@
 #include "Log.hpp"
 #include "CUDA.hpp"
 
+#ifdef DISABLE_CUDA
+#warning CUDA is disabled. No CUDA tests are run
+#else
+
 typedef double real;
 typedef Eigen::SparseMatrix<real> SpMat;
 typedef Eigen::SparseMatrix<real,Eigen::RowMajor> SpMatRowMaj;
@@ -323,3 +327,4 @@ BOOST_AUTO_TEST_CASE(QRDense)
 
 BOOST_AUTO_TEST_SUITE_END()
 
+#endif
