@@ -47,8 +47,8 @@ void Flat::initialiseFromFile()
   );
 }
 
-Coord Flat::x(const real sCoord) const
+Coord Flat::x(const real s) const
 {
-  return Coord(sCoord,0.);
+  return Coord(s,0.);
 }
 
