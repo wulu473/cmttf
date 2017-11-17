@@ -50,6 +50,7 @@ real Domain::dKappa_ds(const real /*s*/) const
   return 0.;
 }
 
+//! Grid spacing
 real Domain::ds() const
 {
   return (maxS()-minS())/cells();
