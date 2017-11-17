@@ -1,7 +1,7 @@
 sudo: required
 
 install:
-  - sudo apt-get install libboost-all-dev libconfig++-dev
+  - sudo apt-get install libboost-all-dev libconfig++-dev libboost-test-dev
   - source travis-scripts/install-cuda-trusty.sh
   - source travis-scripts/install-exprtk.sh
   - source travis-scripts/install-eigen.sh
