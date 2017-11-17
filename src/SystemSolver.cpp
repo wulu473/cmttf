@@ -18,9 +18,9 @@ std::string SystemSolver::baseName() const
   return "Solver";
 }
 
-void SystemSolver::initialise(const real finalT, const real maxDt)
+void SystemSolver::initialise(const real TFin, const real maxDt)
 {
-  m_finalT = finalT;
+  m_finalT = TFin;
   m_maxDt = maxDt;
 }
 
