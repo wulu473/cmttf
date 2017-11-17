@@ -13,7 +13,7 @@ INCLUDES=-isystem=/usr/local/include/eigen3 -isystem=$(CUDA_PATH)/samples/common
 # Everything should be in the default
 LDFLAGS=
 
-CXXFALGS+= -DDISABLE_CUDA
+CXXFLAGS+= -DDISABLE_CUDA
 
 -include common.make
 
