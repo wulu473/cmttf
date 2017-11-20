@@ -14,6 +14,9 @@ class Flat : public Domain
 
     virtual Coord x(const real s) const;
 
+    virtual real kappa(const real s) const;
+    virtual real dkappa_ds(const real s) const;
+
     virtual void initialiseFromFile();
     void initialise(const int N, const real L, const real R);
   protected:

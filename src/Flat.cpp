@@ -20,6 +20,16 @@ std::string Flat::moduleName() const
   return "Flat";
 }
 
+real Flat::kappa(const real /*s*/) const
+{
+  return 0.;
+}
+
+real Flat::dkappa_ds(const real /*s*/) const
+{
+  return 0.;
+}
+
 /**
  * N [in] Number of cells
  * L [in] Left edge of domain

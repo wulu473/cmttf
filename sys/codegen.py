@@ -170,6 +170,7 @@ class Roberts1998(System):
     def define(self):
         self.g,self.g1,self.g2,self.mu,self.tau= sp.symbols("g g1 g2 mu tau")
         self.sigma, self.rho, self.beta = sp.symbols("sigma rho beta")
+        self.kappa, self.dkappa_dx = sp.symbols("kappa dkappa_dx")
 
         self.u, self.eta = sp.symbols("eta u")
         self.state = [self.eta, self.u]
@@ -186,16 +187,18 @@ class Roberts1998(System):
         sigma = self.sigma
         rho = self.rho
         beta = self.beta
+        kappa = self.kappa
+        dkappa_dx = self.dkappa_dx
 
         diff = self.diff_f
         # The coefficient for the shear stress term makes sense
         # when we consider that the coefficients in Myers model
         # differ by a factor of 2/3
-        self.F_disc = [ diff(eta(x)*u(x),x) - beta,
-                  +mu*(2.467 - 0.3*diff(eta(x),x)**2)*u(x)/eta(x)**2 \
-                  -0.82245*sigma*diff(eta(x),x,3) \
-                  -0.82245*g*rho*(g1 + g2*diff(eta(x),x)) \
-                  -1.234*tau/eta(x) \
+        self.F_disc = [ (1+kappa*eta(x))*diff(eta(x)*u(x),x) - beta,
+                  +mu*(2.467 +3*kappa*eta(x) + 2.83*kappa**2*eta(x)**2 - 0.3*diff(eta(x),x)**2)*u(x)/eta(x)**2 \
+                  -0.82245*((1+0.2716*kappa*eta(x))*dkappa_dx+sigma*diff(eta(x),x,3)+kappa**2*diff(eta(x),x)) \
+                  -0.82245*g*rho*((1-0.284*kappa*eta(x))*g1 + g2*diff(eta(x),x)) \
+                  -1.234*tau/eta(x)*(1+1.5486*kappa*eta(x)) \
                   -4.093*mu/eta(x)**1.323*diff(eta(x)**1.466*diff(u(x)/eta(x)**0.143,x),x) \
                   +1.5041*u(x)*rho/eta(x)**0.0985*diff(eta(x)**0.0985*u(x),x)]
         self.F_disc = sp.Matrix(self.F_disc)

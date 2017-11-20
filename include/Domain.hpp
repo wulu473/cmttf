@@ -22,7 +22,7 @@ class Domain : public ParameterisedModuleBase
     virtual real kappa(const real s) const;
 
     //! Return derivative of surface curvature
-    virtual real dKappa_ds(const real s) const;
+    virtual real dkappa_ds(const real s) const;
 
     //! Return spacing along surface
     virtual real ds() const ;

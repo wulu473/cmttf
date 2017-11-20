@@ -2,14 +2,20 @@
 #include <iomanip>
 
 #include "System.hpp"
+#include "Domain.hpp"
+#include "ModuleList.hpp"
 
-State System::F(const StencilArray& states, const real dx, const real x, const real t) const
+State System::F(const StencilArray& states, const real ds, const real s, const real t) const
 {
-  const real beta = m_beta(t,x);
+  static const std::shared_ptr<const Domain> dom = ModuleList::uniqueModule<Domain>();
+  const real kappa = dom->kappa(s);
+  const real dkappa_ds = dom->dkappa_ds(s);
+
+  const real beta = m_beta(t,s);
   const real rho = m_rho;
   const real sigma = m_sigma;
   const real mu = m_mu;
-  const real tau = m_tau(t,x);
+  const real tau = m_tau(t,s);
   const real g = m_gMag;
   const real g1 = m_g1;
   const real g2 = m_g2;
@@ -26,17 +32,22 @@ State System::F(const StencilArray& states, const real dx, const real x, const r
   const real u_4_1 = states[4][1];
 
   State F;
-  F[0] = -beta - 1.0L/2.0L*u_1_0*u_1_1/dx + (1.0L/2.0L)*u_3_0*u_3_1/dx;
-  F[1] = -0.82245*g*g1*rho + 2.467*mu*u_2_1/pow(u_2_0, 2) - 1.234*tau/u_2_0 + 0.411225*g*g2*rho*u_1_0/dx - 0.411225*g*g2*rho*u_3_0/dx - 0.75205*rho*pow(u_1_0, 0.0985)*u_1_1*pow(u_2_0, -0.0985)*u_2_1/dx + 0.75205*rho*pow(u_2_0, -0.0985)*u_2_1*pow(u_3_0, 0.0985)*u_3_1/dx - 1.02325*mu*pow(u_0_0, -0.143)*u_0_1*pow(u_1_0, 1.466)*pow(u_2_0, -1.323)/pow(dx, 2) - 0.075*mu*pow(u_1_0, 2)*u_2_1/(pow(dx, 2)*pow(u_2_0, 2)) + 0.15*mu*u_1_0*u_2_1*u_3_0/(pow(dx, 2)*pow(u_2_0, 2)) + 1.02325*mu*pow(u_1_0, 1.466)*pow(u_2_0, -1.466)*u_2_1/pow(dx, 2) + 1.02325*mu*pow(u_2_0, -1.466)*u_2_1*pow(u_3_0, 1.466)/pow(dx, 2) - 1.02325*mu*pow(u_2_0, -1.323)*pow(u_3_0, 1.466)*pow(u_4_0, -0.143)*u_4_1/pow(dx, 2) - 0.075*mu*u_2_1*pow(u_3_0, 2)/(pow(dx, 2)*pow(u_2_0, 2)) + 0.411225*sigma*u_0_0/pow(dx, 3) - 0.82245*sigma*u_1_0/pow(dx, 3) + 0.82245*sigma*u_3_0/pow(dx, 3) - 0.411225*sigma*u_4_0/pow(dx, 3);
+  F[0] = -beta - 1.0L/2.0L*kappa*u_1_0*u_1_1*u_2_0/ds + (1.0L/2.0L)*kappa*u_2_0*u_3_0*u_3_1/ds - 1.0L/2.0L*u_1_0*u_1_1/ds + (1.0L/2.0L)*u_3_0*u_3_1/ds;
+  F[1] = -0.22337742*dkappa_ds*kappa*u_2_0 - 0.82245*dkappa_ds + 0.2335758*g*g1*kappa*rho*u_2_0 - 0.82245*g*g1*rho + 2.83*pow(kappa, 2)*mu*u_2_1 + 3*kappa*mu*u_2_1/u_2_0 - 1.9109724*kappa*tau + 2.467*mu*u_2_1/pow(u_2_0, 2) - 1.234*tau/u_2_0 + 0.411225*g*g2*rho*u_1_0/ds - 0.411225*g*g2*rho*u_3_0/ds + 0.411225*pow(kappa, 2)*u_1_0/ds - 0.411225*pow(kappa, 2)*u_3_0/ds - 0.75205*rho*pow(u_1_0, 0.0985)*u_1_1*pow(u_2_0, -0.0985)*u_2_1/ds + 0.75205*rho*pow(u_2_0, -0.0985)*u_2_1*pow(u_3_0, 0.0985)*u_3_1/ds - 1.02325*mu*pow(u_0_0, -0.143)*u_0_1*pow(u_1_0, 1.466)*pow(u_2_0, -1.323)/pow(ds, 2) - 0.075*mu*pow(u_1_0, 2)*u_2_1/(pow(ds, 2)*pow(u_2_0, 2)) + 0.15*mu*u_1_0*u_2_1*u_3_0/(pow(ds, 2)*pow(u_2_0, 2)) + 1.02325*mu*pow(u_1_0, 1.466)*pow(u_2_0, -1.466)*u_2_1/pow(ds, 2) + 1.02325*mu*pow(u_2_0, -1.466)*u_2_1*pow(u_3_0, 1.466)/pow(ds, 2) - 1.02325*mu*pow(u_2_0, -1.323)*pow(u_3_0, 1.466)*pow(u_4_0, -0.143)*u_4_1/pow(ds, 2) - 0.075*mu*u_2_1*pow(u_3_0, 2)/(pow(ds, 2)*pow(u_2_0, 2)) + 0.411225*sigma*u_0_0/pow(ds, 3) - 0.82245*sigma*u_1_0/pow(ds, 3) + 0.82245*sigma*u_3_0/pow(ds, 3) - 0.411225*sigma*u_4_0/pow(ds, 3);
   return F;
 }
 
-StencilJacobian System::J(const StencilArray& states, const real dx, const real x, const real t) const{
+StencilJacobian System::J(const StencilArray& states, const real ds, const real s, const real t) const{
+  static const std::shared_ptr<const Domain> dom = ModuleList::uniqueModule<Domain>();
+  const real kappa = dom->kappa(s);
+  const real dkappa_ds = dom->dkappa_ds(s);
+
   const real rho = m_rho;
   const real sigma = m_sigma;
   const real mu = m_mu;
-  const real tau = m_tau(t,x);
+  const real tau = m_tau(t,s);
   const real g = m_gMag;
+  const real g1 = m_g1;
   const real g2 = m_g2;
 
   const real u_0_0 = states[0][0];
@@ -52,25 +63,25 @@ StencilJacobian System::J(const StencilArray& states, const real dx, const real 
 
   StencilJacobian J;
   J(0,0) = 0;
-  J(1,0) = 0.14632475*mu*pow(u_0_0, -1.143)*u_0_1*pow(u_1_0, 1.466)*pow(u_2_0, -1.323)/pow(dx, 2) + 0.411225*sigma/pow(dx, 3);
+  J(1,0) = 0.14632475*mu*pow(u_0_0, -1.143)*u_0_1*pow(u_1_0, 1.466)*pow(u_2_0, -1.323)/pow(ds, 2) + 0.411225*sigma/pow(ds, 3);
   J(0,1) = 0;
-  J(1,1) = -1.02325*mu*pow(u_0_0, -0.143)*pow(u_1_0, 1.466)*pow(u_2_0, -1.323)/pow(dx, 2);
-  J(0,2) = -1.0L/2.0L*u_1_1/dx;
-  J(1,2) = 0.411225*g*g2*rho/dx - 0.074076925*rho*pow(u_1_0, -0.9015)*u_1_1*pow(u_2_0, -0.0985)*u_2_1/dx - 1.5000845*mu*pow(u_0_0, -0.143)*u_0_1*pow(u_1_0, 0.466)*pow(u_2_0, -1.323)/pow(dx, 2) + 1.5000845*mu*pow(u_1_0, 0.466)*pow(u_2_0, -1.466)*u_2_1/pow(dx, 2) - 0.15*mu*u_1_0*u_2_1/(pow(dx, 2)*pow(u_2_0, 2)) + 0.15*mu*u_2_1*u_3_0/(pow(dx, 2)*pow(u_2_0, 2)) - 0.82245*sigma/pow(dx, 3);
-  J(0,3) = -1.0L/2.0L*u_1_0/dx;
-  J(1,3) = -0.75205*rho*pow(u_1_0, 0.0985)*pow(u_2_0, -0.0985)*u_2_1/dx;
-  J(0,4) = 0;
-  J(1,4) = -4.934*mu*u_2_1/pow(u_2_0, 3) + 1.234*tau/pow(u_2_0, 2) + 0.074076925*rho*pow(u_1_0, 0.0985)*u_1_1*pow(u_2_0, -1.0985)*u_2_1/dx - 0.074076925*rho*pow(u_2_0, -1.0985)*u_2_1*pow(u_3_0, 0.0985)*u_3_1/dx + 1.35375975*mu*pow(u_0_0, -0.143)*u_0_1*pow(u_1_0, 1.466)*pow(u_2_0, -2.323)/pow(dx, 2) + 0.15*mu*pow(u_1_0, 2)*u_2_1/(pow(dx, 2)*pow(u_2_0, 3)) - 0.3*mu*u_1_0*u_2_1*u_3_0/(pow(dx, 2)*pow(u_2_0, 3)) - 1.5000845*mu*pow(u_1_0, 1.466)*pow(u_2_0, -2.466)*u_2_1/pow(dx, 2) - 1.5000845*mu*pow(u_2_0, -2.466)*u_2_1*pow(u_3_0, 1.466)/pow(dx, 2) + 1.35375975*mu*pow(u_2_0, -2.323)*pow(u_3_0, 1.466)*pow(u_4_0, -0.143)*u_4_1/pow(dx, 2) + 0.15*mu*u_2_1*pow(u_3_0, 2)/(pow(dx, 2)*pow(u_2_0, 3));
+  J(1,1) = -1.02325*mu*pow(u_0_0, -0.143)*pow(u_1_0, 1.466)*pow(u_2_0, -1.323)/pow(ds, 2);
+  J(0,2) = -1.0L/2.0L*kappa*u_1_1*u_2_0/ds - 1.0L/2.0L*u_1_1/ds;
+  J(1,2) = 0.411225*g*g2*rho/ds + 0.411225*pow(kappa, 2)/ds - 0.074076925*rho*pow(u_1_0, -0.9015)*u_1_1*pow(u_2_0, -0.0985)*u_2_1/ds - 1.5000845*mu*pow(u_0_0, -0.143)*u_0_1*pow(u_1_0, 0.466)*pow(u_2_0, -1.323)/pow(ds, 2) + 1.5000845*mu*pow(u_1_0, 0.466)*pow(u_2_0, -1.466)*u_2_1/pow(ds, 2) - 0.15*mu*u_1_0*u_2_1/(pow(ds, 2)*pow(u_2_0, 2)) + 0.15*mu*u_2_1*u_3_0/(pow(ds, 2)*pow(u_2_0, 2)) - 0.82245*sigma/pow(ds, 3);
+  J(0,3) = -1.0L/2.0L*kappa*u_1_0*u_2_0/ds - 1.0L/2.0L*u_1_0/ds;
+  J(1,3) = -0.75205*rho*pow(u_1_0, 0.0985)*pow(u_2_0, -0.0985)*u_2_1/ds;
+  J(0,4) = -1.0L/2.0L*kappa*u_1_0*u_1_1/ds + (1.0L/2.0L)*kappa*u_3_0*u_3_1/ds;
+  J(1,4) = -0.22337742*dkappa_ds*kappa + 0.2335758*g*g1*kappa*rho - 3*kappa*mu*u_2_1/pow(u_2_0, 2) - 4.934*mu*u_2_1/pow(u_2_0, 3) + 1.234*tau/pow(u_2_0, 2) + 0.074076925*rho*pow(u_1_0, 0.0985)*u_1_1*pow(u_2_0, -1.0985)*u_2_1/ds - 0.074076925*rho*pow(u_2_0, -1.0985)*u_2_1*pow(u_3_0, 0.0985)*u_3_1/ds + 1.35375975*mu*pow(u_0_0, -0.143)*u_0_1*pow(u_1_0, 1.466)*pow(u_2_0, -2.323)/pow(ds, 2) + 0.15*mu*pow(u_1_0, 2)*u_2_1/(pow(ds, 2)*pow(u_2_0, 3)) - 0.3*mu*u_1_0*u_2_1*u_3_0/(pow(ds, 2)*pow(u_2_0, 3)) - 1.5000845*mu*pow(u_1_0, 1.466)*pow(u_2_0, -2.466)*u_2_1/pow(ds, 2) - 1.5000845*mu*pow(u_2_0, -2.466)*u_2_1*pow(u_3_0, 1.466)/pow(ds, 2) + 1.35375975*mu*pow(u_2_0, -2.323)*pow(u_3_0, 1.466)*pow(u_4_0, -0.143)*u_4_1/pow(ds, 2) + 0.15*mu*u_2_1*pow(u_3_0, 2)/(pow(ds, 2)*pow(u_2_0, 3));
   J(0,5) = 0;
-  J(1,5) = 2.467*mu/pow(u_2_0, 2) - 0.75205*rho*pow(u_1_0, 0.0985)*u_1_1*pow(u_2_0, -0.0985)/dx + 0.75205*rho*pow(u_2_0, -0.0985)*pow(u_3_0, 0.0985)*u_3_1/dx - 0.075*mu*pow(u_1_0, 2)/(pow(dx, 2)*pow(u_2_0, 2)) + 0.15*mu*u_1_0*u_3_0/(pow(dx, 2)*pow(u_2_0, 2)) + 1.02325*mu*pow(u_1_0, 1.466)*pow(u_2_0, -1.466)/pow(dx, 2) + 1.02325*mu*pow(u_2_0, -1.466)*pow(u_3_0, 1.466)/pow(dx, 2) - 0.075*mu*pow(u_3_0, 2)/(pow(dx, 2)*pow(u_2_0, 2));
-  J(0,6) = (1.0L/2.0L)*u_3_1/dx;
-  J(1,6) = -0.411225*g*g2*rho/dx + 0.074076925*rho*pow(u_2_0, -0.0985)*u_2_1*pow(u_3_0, -0.9015)*u_3_1/dx + 0.15*mu*u_1_0*u_2_1/(pow(dx, 2)*pow(u_2_0, 2)) + 1.5000845*mu*pow(u_2_0, -1.466)*u_2_1*pow(u_3_0, 0.466)/pow(dx, 2) - 1.5000845*mu*pow(u_2_0, -1.323)*pow(u_3_0, 0.466)*pow(u_4_0, -0.143)*u_4_1/pow(dx, 2) - 0.15*mu*u_2_1*u_3_0/(pow(dx, 2)*pow(u_2_0, 2)) + 0.82245*sigma/pow(dx, 3);
-  J(0,7) = (1.0L/2.0L)*u_3_0/dx;
-  J(1,7) = 0.75205*rho*pow(u_2_0, -0.0985)*u_2_1*pow(u_3_0, 0.0985)/dx;
+  J(1,5) = 2.83*pow(kappa, 2)*mu + 3*kappa*mu/u_2_0 + 2.467*mu/pow(u_2_0, 2) - 0.75205*rho*pow(u_1_0, 0.0985)*u_1_1*pow(u_2_0, -0.0985)/ds + 0.75205*rho*pow(u_2_0, -0.0985)*pow(u_3_0, 0.0985)*u_3_1/ds - 0.075*mu*pow(u_1_0, 2)/(pow(ds, 2)*pow(u_2_0, 2)) + 0.15*mu*u_1_0*u_3_0/(pow(ds, 2)*pow(u_2_0, 2)) + 1.02325*mu*pow(u_1_0, 1.466)*pow(u_2_0, -1.466)/pow(ds, 2) + 1.02325*mu*pow(u_2_0, -1.466)*pow(u_3_0, 1.466)/pow(ds, 2) - 0.075*mu*pow(u_3_0, 2)/(pow(ds, 2)*pow(u_2_0, 2));
+  J(0,6) = (1.0L/2.0L)*kappa*u_2_0*u_3_1/ds + (1.0L/2.0L)*u_3_1/ds;
+  J(1,6) = -0.411225*g*g2*rho/ds - 0.411225*pow(kappa, 2)/ds + 0.074076925*rho*pow(u_2_0, -0.0985)*u_2_1*pow(u_3_0, -0.9015)*u_3_1/ds + 0.15*mu*u_1_0*u_2_1/(pow(ds, 2)*pow(u_2_0, 2)) + 1.5000845*mu*pow(u_2_0, -1.466)*u_2_1*pow(u_3_0, 0.466)/pow(ds, 2) - 1.5000845*mu*pow(u_2_0, -1.323)*pow(u_3_0, 0.466)*pow(u_4_0, -0.143)*u_4_1/pow(ds, 2) - 0.15*mu*u_2_1*u_3_0/(pow(ds, 2)*pow(u_2_0, 2)) + 0.82245*sigma/pow(ds, 3);
+  J(0,7) = (1.0L/2.0L)*kappa*u_2_0*u_3_0/ds + (1.0L/2.0L)*u_3_0/ds;
+  J(1,7) = 0.75205*rho*pow(u_2_0, -0.0985)*u_2_1*pow(u_3_0, 0.0985)/ds;
   J(0,8) = 0;
-  J(1,8) = 0.14632475*mu*pow(u_2_0, -1.323)*pow(u_3_0, 1.466)*pow(u_4_0, -1.143)*u_4_1/pow(dx, 2) - 0.411225*sigma/pow(dx, 3);
+  J(1,8) = 0.14632475*mu*pow(u_2_0, -1.323)*pow(u_3_0, 1.466)*pow(u_4_0, -1.143)*u_4_1/pow(ds, 2) - 0.411225*sigma/pow(ds, 3);
   J(0,9) = 0;
-  J(1,9) = -1.02325*mu*pow(u_2_0, -1.323)*pow(u_3_0, 1.466)*pow(u_4_0, -0.143)/pow(dx, 2);
+J(1,9) = -1.02325*mu*pow(u_2_0, -1.323)*pow(u_3_0, 1.466)*pow(u_4_0, -0.143)/pow(ds, 2);
   return J;
 }
 

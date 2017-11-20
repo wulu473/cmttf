@@ -43,9 +43,9 @@ real Domain::kappa(const real /*s*/) const
 }
 
 //! Return derivative of surface curvature
-real Domain::dKappa_ds(const real /*s*/) const
+real Domain::dkappa_ds(const real /*s*/) const
 {
-  BOOST_LOG_TRIVIAL(error) << "Domain::dKappa_ds called from base class.";
+  BOOST_LOG_TRIVIAL(error) << "Domain::dkappa_ds called from base class.";
   throw InheritanceException();
   return 0.;
 }
