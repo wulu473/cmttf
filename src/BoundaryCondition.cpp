@@ -39,6 +39,23 @@ BoundaryConditionContainer::BoundaryConditionContainer()
 
 }
 
+std::shared_ptr<const BoundaryCondition> BoundaryConditionContainer::left() const
+{
+  return m_left;
+}
+
+std::shared_ptr<const BoundaryCondition> BoundaryConditionContainer::right() const
+{
+  return m_right;
+}
+
+void BoundaryConditionContainer::initialise(const std::shared_ptr<BoundaryCondition> left,
+                                            const std::shared_ptr<BoundaryCondition> right)
+{
+  m_left = left;
+  m_right = right;
+}
+
 void BoundaryConditionContainer::initialiseFromParameters(const Parameters& params)
 {
   std::string lStr = params.activeModule("BoundaryConditions.Left"); 

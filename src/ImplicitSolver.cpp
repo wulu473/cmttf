@@ -53,6 +53,8 @@ void ImplicitSolver::function(const Vector& states_old, const Vector& states_new
   const int stenS = SystemAttributes::stencilSize;
   const int statS = SystemAttributes::stateSize;
 
+  const int end = domain->end();
+
   for(int i=domain->begin();i<domain->end();i++)
   {
     const real s = domain->s(i);
@@ -65,21 +67,37 @@ void ImplicitSolver::function(const Vector& states_old, const Vector& states_new
       {
         // Boundary condition required on the left edge
         // Make it transmissive
+        State domainState_old;
+        State domainState_new;
+        State periodicDomainState_old;
+        State periodicDomainState_new;
         for(unsigned int u=0;u<statS;u++)
         {
-          stencil_new[j][u] = states_new[(-k-1)*statS+u];
-          stencil_old[j][u] = states_old[(-k-1)*statS+u];
+          domainState_new[u] = states_new[(-k-1)*statS+u];
+          domainState_old[u] = states_old[(-k-1)*statS+u];
+          periodicDomainState_new[u] = states_new[(end+k)*statS+u];
+          periodicDomainState_old[u] = states_old[(end+k)*statS+u];
         }
+        stencil_new[j] = domainState_new;
+        stencil_old[j] = domainState_old;
       }
       else if(domain->end()<=k)
       {
         // Boundary condition required on the right edge
         // Make it transmissive
+        State domainState_old;
+        State domainState_new;
+        State periodicDomainState_old;
+        State periodicDomainState_new;
         for(unsigned int u=0;u<statS;u++)
         {
-          stencil_new[j][u] = states_new[statS*(2*domain->end()-k-1)+u];
-          stencil_old[j][u] = states_old[statS*(2*domain->end()-k-1)+u];
+          domainState_new[u] = states_new[statS*(2*domain->end()-k-1)+u];
+          domainState_old[u] = states_old[statS*(2*domain->end()-k-1)+u];
+          periodicDomainState_new[u] = states_new[(k-end)*statS+u];
+          periodicDomainState_old[u] = states_old[(k-end)*statS+u];
         }
+        stencil_new[j] = domainState_new;
+        stencil_old[j] = domainState_old;
       }
       else
       {
@@ -109,12 +127,17 @@ void ImplicitSolver::jacobian(const Vector& states, const real dt, const real t,
   const static std::shared_ptr<const System> system = ModuleList::uniqueModule<System>();
   const static std::shared_ptr<const Domain> domain = ModuleList::uniqueModule<Domain>();
 
+  const static std::shared_ptr<const BoundaryCondition> bcL = m_bcs->left();
+  const static std::shared_ptr<const BoundaryCondition> bcR = m_bcs->right();
+
   assert((unsigned int)(J.rows()) == domain->cells()*statS);
   assert((unsigned int)(J.cols()) == domain->cells()*statS);
   assert((unsigned int)(states.size()) == domain->cells()*statS);
 
   const real ds = domain->ds();
   const State factorDt = system->factorTimeDeriv();
+
+  const int end = domain->end();
 
   typedef Eigen::Triplet<real> Triplet;
   std::vector<Triplet> triplets;
@@ -153,19 +176,25 @@ void ImplicitSolver::jacobian(const Vector& states, const real dt, const real t,
       {
         // Boundary condition required on the left edge
         // Make it transmissive
+        State domainState, periodicDomainState;
         for(unsigned int i_state=0;i_state<statS;i_state++)
         {
-          stencil[i_stenc][i_state] = states[(-i_stenc_cell-1)*statS+i_state];
+          domainState[i_state] = states[(-i_stenc_cell-1)*statS+i_state];
+          periodicDomainState[i_state] = states[(end+i_stenc_cell)*statS+i_state];
         }
+        stencil[i_stenc] = bcL->ghostState(domainState,periodicDomainState);
       }
       else if(domain->end()<=i_stenc_cell)
       {
         // Boundary condition required on the right edge
         // Make it transmissive
+        State domainState, periodicDomainState;
         for(unsigned int i_state=0;i_state<statS;i_state++)
         {
-          stencil[i_stenc][i_state] = states[statS*(2*domain->end()-i_stenc_cell-1)+i_state];
+          domainState[i_state] = states[statS*(2*domain->end()-i_stenc_cell-1)+i_state];
+          periodicDomainState[i_state] = states[(i_stenc_cell-end)*statS+i_state];
         }
+        stencil[i_stenc] = domainState;
       }
       else
       {
@@ -210,6 +239,9 @@ void ImplicitSolver::advance(std::shared_ptr<DataPatch> states, const real dt, c
   BOOST_LOG_TRIVIAL(debug) << "ImplicitSolver: Advancing data patch by dt = " << dt << ", t = " << t;
 
   static const std::shared_ptr<const RootFinder> solver = ModuleList::uniqueModule<RootFinder>();
+
+  const static std::shared_ptr<const BoundaryCondition> bcL = m_bcs->left();
+  const static std::shared_ptr<const BoundaryCondition> bcR = m_bcs->right();
 
   // IMPROVE this by using Eigen::map and not copy all the states
   const unsigned int statS = SystemAttributes::stateSize;

@@ -6,8 +6,10 @@
 #include "Attributes.hpp"
 #include "ModuleList.hpp"
 #include "Flat.hpp"
+#include "Transmissive.hpp"
 
 #include "System.hpp"
+
 #ifndef ROBERTS
 #warning ImplicitSolver unit tests only work for system roberts
 #warning Skipping ImplicitSolverTest.cpp ...
@@ -74,6 +76,9 @@ BOOST_AUTO_TEST_CASE(setupJacobianRand)
   flat->initialise(5,0.,0.5);
   ModuleList::addModule(flat);
 
+  std::shared_ptr<BoundaryConditionContainer> bcs = std::make_shared<BoundaryConditionContainer>();
+  bcs->initialise(std::make_shared<Transmissive>(), std::make_shared<Transmissive>());
+
   ImplicitSolver::Vector states(10);
 
   states<<  1.00000000e-06,3.00000000e-01,
@@ -84,6 +89,7 @@ BOOST_AUTO_TEST_CASE(setupJacobianRand)
 
   std::shared_ptr<ImplicitSolver> solver = std::make_shared<ImplicitSolver>();
   solver->initialise(1.0);
+  solver->setBoundaryConditions(bcs);
 
   ImplicitSolver::SpMatRowMaj J(10,10);
 

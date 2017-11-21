@@ -29,6 +29,8 @@ class BoundaryConditionContainer
   public:
     BoundaryConditionContainer();
 
+    void initialise(const std::shared_ptr<BoundaryCondition> left,
+                    const std::shared_ptr<BoundaryCondition> right);
     void initialiseFromParameters(const Parameters& params);
     
     std::shared_ptr<const BoundaryCondition> left() const;
