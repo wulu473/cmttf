@@ -52,7 +52,7 @@ class System : public SystemBase
     real m_gMag;
     
     //! Direction of gravity (has to be normalised)
-    real m_g1,m_g2;
+    Coord m_g;
 };
 
 #endif

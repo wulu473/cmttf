@@ -15,6 +15,9 @@ class Domain : public ParameterisedModuleBase
     //! Return coordinate in embedding space
     virtual Coord x(const real s) const;
 
+    //! i-th basis vector
+    virtual Coord x_(const unsigned int i, const real s) const;
+
     //! Return surface coordinate of cell
     virtual real s(const int i) const;
 

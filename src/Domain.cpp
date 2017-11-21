@@ -28,6 +28,14 @@ Coord Domain::x(const real) const
   return Coord(0.);
 }
 
+//! i-th basis vector
+Coord Domain::x_(const unsigned int /*i*/, const real /*s*/) const
+{
+  BOOST_LOG_TRIVIAL(error) << "Domain::x_ called from base class.";
+  throw InheritanceException();
+  return Coord(0.);
+}
+
 //! Surface coordinate
 real Domain::s(const int i) const
 {

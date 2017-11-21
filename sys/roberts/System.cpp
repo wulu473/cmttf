@@ -10,6 +10,8 @@ State System::F(const StencilArray& states, const real ds, const real s, const r
   static const std::shared_ptr<const Domain> dom = ModuleList::uniqueModule<Domain>();
   const real kappa = dom->kappa(s);
   const real dkappa_ds = dom->dkappa_ds(s);
+  const Coord x_1 = dom->x_(0,s);
+  const Coord x_2 = dom->x_(1,s);
 
   const real beta = m_beta(t,s);
   const real rho = m_rho;
@@ -17,8 +19,8 @@ State System::F(const StencilArray& states, const real ds, const real s, const r
   const real mu = m_mu;
   const real tau = m_tau(t,s);
   const real g = m_gMag;
-  const real g1 = m_g1;
-  const real g2 = m_g2;
+  const real g1 = m_g.dot(x_1);
+  const real g2 = m_g.dot(x_2);
 
   const real u_0_0 = states[0][0];
   const real u_0_1 = states[0][1];
@@ -41,14 +43,16 @@ StencilJacobian System::J(const StencilArray& states, const real ds, const real 
   static const std::shared_ptr<const Domain> dom = ModuleList::uniqueModule<Domain>();
   const real kappa = dom->kappa(s);
   const real dkappa_ds = dom->dkappa_ds(s);
+  const Coord x_1 = dom->x_(0,s);
+  const Coord x_2 = dom->x_(1,s);
 
   const real rho = m_rho;
   const real sigma = m_sigma;
   const real mu = m_mu;
   const real tau = m_tau(t,s);
   const real g = m_gMag;
-  const real g1 = m_g1;
-  const real g2 = m_g2;
+  const real g1 = m_g.dot(x_1);
+  const real g2 = m_g.dot(x_2);
 
   const real u_0_0 = states[0][0];
   const real u_0_1 = states[0][1];
@@ -103,13 +107,11 @@ void System::initialise(const real mu, const real rho, const real g1, const real
   m_tau = tau;
   m_sigma = sigma;
   m_beta = beta;
-  m_gMag = sqrt(g1*g1+g2*g2);
-  m_g1 = g1;
-  m_g2 = g2;
+  m_g = Coord(g1,g2);
+  m_gMag = m_g.norm();
   if(m_gMag > 0)
   {
-    m_g1 /= m_gMag;
-    m_g2 /= m_gMag;
+    m_g /= m_gMag;
   }
 }
 

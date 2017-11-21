@@ -20,6 +20,18 @@ std::string Flat::moduleName() const
   return "Flat";
 }
 
+Coord Flat::x(const real s) const
+{
+  return Coord(s,0.);
+}
+
+Coord Flat::x_(const unsigned int i, const real /*s*/) const
+{
+  Coord basis(0.,0.);
+  basis[i] = 1.;
+  return basis;
+}
+
 real Flat::kappa(const real /*s*/) const
 {
   return 0.;
@@ -57,8 +69,4 @@ void Flat::initialiseFromFile()
   );
 }
 
-Coord Flat::x(const real s) const
-{
-  return Coord(s,0.);
-}
 
