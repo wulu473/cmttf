@@ -85,9 +85,14 @@ int main (int argc, char *argv[])
   std::list<std::shared_ptr<Output> > activeOutputModules = ModuleList::mutableModules<Output>();
   std::shared_ptr<const InitialCondition> initialCond = ModuleList::uniqueModule<InitialCondition>();
 
+  // Setup boundary conditions
+  std::shared_ptr<BoundaryConditionContainer> bcs = std::make_shared<BoundaryConditionContainer>();
+  bcs->initialiseFromParameters(params);
+
   // Initialise solver
   std::shared_ptr<SystemSolver> solver = std::make_shared<SystemSolver>();
   solver->initialiseFromParameters(params);
+  solver->setBoundaryConditions(bcs);
 
   // Set initial condition 
   const unsigned int nCells = ModuleList::uniqueModule<Domain>()->cells();

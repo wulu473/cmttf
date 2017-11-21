@@ -52,7 +52,7 @@ std::string Parameters::activeModule(const std::string& parentModule) const
   std::list<std::string> moduleNames = activeModules(parentModule);
   if (moduleNames.size() > 1)
   {
-    BOOST_LOG_TRIVIAL(error) << "Multiple active modules for " << parentModule << "found.";
+    BOOST_LOG_TRIVIAL(error) << "Multiple active modules for " << parentModule << " found.";
     exit(10);
   }
   if (moduleNames.empty())
@@ -78,7 +78,7 @@ std::list<std::string> Parameters::activeModules(const std::string& parentModule
   }
   catch (const libconfig::SettingNotFoundException &stex)
   {
-    BOOST_LOG_TRIVIAL(error) << "No active module for " << parentModule << "found.";
+    BOOST_LOG_TRIVIAL(error) << "No active module for " << parentModule << " found.";
     exit(10);
   }
   return moduleNames;	

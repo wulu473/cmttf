@@ -18,3 +18,8 @@ void TimeIntegrator::advance(std::shared_ptr<DataPatch> /*states*/, const real /
   throw InheritanceException();
 }
 
+void TimeIntegrator::setBoundaryConditions(std::shared_ptr<const BoundaryConditionContainer> bcs)
+{
+  m_bcs = bcs;
+}
+

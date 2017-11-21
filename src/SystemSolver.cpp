@@ -52,3 +52,10 @@ int SystemSolver::exitcode() const
 {
   return 0;
 }
+
+void SystemSolver::setBoundaryConditions(std::shared_ptr<const BoundaryConditionContainer> bcs)
+{
+  m_bcs = bcs;
+  ModuleList::uniqueModule<TimeIntegrator>(); // Make sure only one TimeIntegrator is active
+  ModuleList::mutableModules<TimeIntegrator>().front()->setBoundaryConditions(bcs);
+}

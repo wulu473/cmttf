@@ -4,6 +4,7 @@
 
 #include "ModuleBase.hpp"
 #include "DataPatch.hpp"
+#include "BoundaryCondition.hpp"
 
 class SystemSolver : public ParameterisedModuleBase
 {
@@ -23,9 +24,13 @@ class SystemSolver : public ParameterisedModuleBase
     virtual real finalT() const;
 
     virtual int exitcode() const;
+
+    virtual void setBoundaryConditions(std::shared_ptr<const BoundaryConditionContainer>);
   private:
     real m_finalT;
     real m_maxDt;
+
+    std::shared_ptr<const BoundaryConditionContainer> m_bcs;
 };
 
 #endif

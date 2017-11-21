@@ -1,9 +1,6 @@
-
 #ifndef FACTORY_H_
 #error FactoryTemplates.cpp must be included in Factory.H
 #endif
-
-
 
 template<typename T>
 std::shared_ptr<T> Factory::create(const std::string& classname)
@@ -25,11 +22,3 @@ std::shared_ptr<T> Factory::create(const std::string& classname)
   return t;
 }
 
-
-template<typename T>
-std::shared_ptr<T> Factory::createInitialised(const std::string& classname, const Parameters& params)
-{
-  std::shared_ptr<T> m = Factory::create<T>(classname);
-  m->initialiseFromParameters(params);
-  return m;
-}
