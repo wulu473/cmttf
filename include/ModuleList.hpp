@@ -33,8 +33,8 @@ class ModuleList
 
     static void addModule(const std::shared_ptr<ModuleBase>);
 
-    //! Read settings file and create instances of active modules
-    static void initialiseFromFile();
+    //! Read parameter store and create instances of active modules
+    static void initialiseFromParameters(const Parameters& params);
 
     static void clear();
   private:

@@ -31,8 +31,9 @@ BOOST_AUTO_TEST_CASE(setAndGetModule)
 #else
 BOOST_AUTO_TEST_CASE(initialiseFromFile)
 {
-  Parameters::readFile("tests/ParametersTest.cfg");
-  ModuleList::initialiseFromFile();
+  Parameters params;
+  params.readFile("tests/ParametersTest.cfg");
+  ModuleList::initialiseFromParameters(params);
 
   std::shared_ptr<const Output> output = ModuleList::module<Output>();
   BOOST_CHECK_EQUAL(output->name(),"Output.Gnuplot");

@@ -34,10 +34,11 @@ void Uniform::initialise(const State& state)
   m_state = state;
 }
 
-void Uniform::initialiseFromFile()
+void Uniform::initialiseFromParameters(const Parameters& params)
 {
   initialise(
           //! Uniform state
-          getParameter<State>("state")
+          getParameter<State>(params, "state")
   );
 }
+

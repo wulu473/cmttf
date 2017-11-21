@@ -13,38 +13,38 @@
 class Parameters
 {
   public:
-    static void readFile(const std::string&);
+    void readFile(const std::string&);
 
     template<typename T>
-    static const T getParameter(const std::string&);
+    const T getParameter(const std::string&) const;
 
     template<typename T>
-    static const T getParameter(const std::string&, const T&);
+    const T getParameter(const std::string&, const T&) const;
 
     template<typename T>
-    static const std::vector<T> getVectorParameter(const std::string&);
+    const std::vector<T> getVectorParameter(const std::string&) const;
 
-    static const TimeSpaceDependReal getExpressionParameter(const std::string&);
-    static const std::vector<TimeSpaceDependReal> getExpressionVectorParameter(const std::string&);
+    const TimeSpaceDependReal getExpressionParameter(const std::string&) const;
+    const std::vector<TimeSpaceDependReal> getExpressionVectorParameter(const std::string&) const;
 
-    static bool exists(const std::string&); 
-    static int getLength(const std::string&);
+    bool exists(const std::string&) const ; 
+    int getLength(const std::string&) const;
 
     template<typename T>
-    static void deleteUnactive(std::list<T*>&);
+    void deleteUnactive(std::list<T*>&);
 
-    static std::string activeModule(const std::string&);
-    static std::list<std::string> activeModules(const std::string&);
-    static std::list<std::string> allActiveModules();
+    std::string activeModule(const std::string&) const;
+    std::list<std::string> activeModules(const std::string&) const;
+    std::list<std::string> allActiveModules() const;
 
   private:
-    static libconfig::Config m_cfg;
+    libconfig::Config m_cfg;
 
     template<typename T>
-    static const T convertScalar(const std::string&);
+    const T convertScalar(const std::string&) const;
 
     template<typename T>
-    static const T convertArray(const std::string&);
+    const T convertArray(const std::string&) const;
 };
 
 #include "ParametersTemplates.cpp"

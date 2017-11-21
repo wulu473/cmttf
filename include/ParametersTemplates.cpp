@@ -9,7 +9,7 @@
 
 // Read parameter from settings file. If not supplied abort.
 template<typename T>
-const T Parameters::getParameter(const std::string& name)
+const T Parameters::getParameter(const std::string& name) const
 {
   T value;
   /*
@@ -29,7 +29,8 @@ const T Parameters::getParameter(const std::string& name)
 
 // Read parameter from settings file. If not supplied use default value
 template<typename T>
-const T Parameters::getParameter(const std::string& name, const T& defaultValue) {
+const T Parameters::getParameter(const std::string& name, const T& defaultValue) const
+{
   T value;
   if ( !m_cfg.lookupValue(name,value)) {
     BOOST_LOG_TRIVIAL(warning) << "Undefined parameter " << name << ": use default: " << defaultValue;
@@ -40,7 +41,8 @@ const T Parameters::getParameter(const std::string& name, const T& defaultValue)
 
 // Read parameter from settings file. If not supplied abort.
 template<typename T>
-const std::vector<T> Parameters::getVectorParameter(const std::string& name) {
+const std::vector<T> Parameters::getVectorParameter(const std::string& name) const
+{
   std::vector<T> values;
 
   if(!m_cfg.exists(name)) {

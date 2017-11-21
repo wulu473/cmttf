@@ -38,12 +38,12 @@ void Gnuplot::initialise(const std::string filename, const real interval,
   m_frame = 0;
 }
 
-void Gnuplot::initialiseFromFile()
+void Gnuplot::initialiseFromParameters(const Parameters& params)
 {
   initialise(
-    getParameter<std::string>("filename"),
-    getParameter<real>("interval"),
-    getParameter<unsigned int>("frequency",std::numeric_limits<unsigned int>::max())
+    getParameter<std::string>(params,"filename"),
+    getParameter<real>(params,"interval"),
+    getParameter<unsigned int>(params,"frequency",std::numeric_limits<unsigned int>::max())
     );
 }
 

@@ -74,8 +74,9 @@ int main (int argc, char *argv[])
   }
 
   // Initalise from settings file
-  Parameters::readFile(settingsFileName);
-  ModuleList::initialiseFromFile();
+  Parameters params;
+  params.readFile(settingsFileName);
+  ModuleList::initialiseFromParameters(params);
 
   // Enable floating point exceptions
   feenableexcept(FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID);
@@ -86,7 +87,7 @@ int main (int argc, char *argv[])
 
   // Initialise solver
   std::shared_ptr<SystemSolver> solver = std::make_shared<SystemSolver>();
-  solver->initialiseFromFile();
+  solver->initialiseFromParameters(params);
 
   // Set initial condition 
   const unsigned int nCells = ModuleList::uniqueModule<Domain>()->cells();

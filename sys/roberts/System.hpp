@@ -27,7 +27,7 @@ class System : public SystemBase
     void initialise(const real mu, const real rho, const real g1, const real g2, const real sigma,
                     const TimeSpaceDependReal tau, const TimeSpaceDependReal beta);
 
-    void initialiseFromFile();
+    void initialiseFromParameters(const Parameters& params);
 
     virtual bool checkValid(Ref<State> state) const;
   private:

@@ -39,9 +39,9 @@ void Expression::initialise(const StateExpr& state)
   m_state = state;
 }
 
-void Expression::initialiseFromFile()
+void Expression::initialiseFromParameters(const Parameters& params)
 {
-  std::vector<TimeSpaceDependReal> stateExprVec = getVectorParameter<TimeSpaceDependReal>("state");
+  std::vector<TimeSpaceDependReal> stateExprVec = getVectorParameter<TimeSpaceDependReal>(params, "state");
   assert(SystemAttributes::stateSize == stateExprVec.size());
   for(unsigned int i=0; i < SystemAttributes::stateSize; i++)
   {

@@ -115,14 +115,14 @@ void System::initialise(const real mu, const real rho, const real g1, const real
   }
 }
 
-void System::initialiseFromFile()
+void System::initialiseFromParameters(const Parameters& params)
 {
-  const real mu = getParameter<real>("mu");
-  const real rho = getParameter<real>("rho");
-  const TimeSpaceDependReal tau = getParameter<TimeSpaceDependReal>("tau");
-  const TimeSpaceDependReal beta = getParameter<TimeSpaceDependReal>("beta");
-  const real sigma = getParameter<real>("sigma");
-  const std::vector<real> g = getVectorParameter<real>("g");
+  const real mu = getParameter<real>(params, "mu");
+  const real rho = getParameter<real>(params, "rho");
+  const TimeSpaceDependReal tau = getParameter<TimeSpaceDependReal>(params, "tau");
+  const TimeSpaceDependReal beta = getParameter<TimeSpaceDependReal>(params, "beta");
+  const real sigma = getParameter<real>(params, "sigma");
+  const std::vector<real> g = getVectorParameter<real>(params, "g");
 
   assert(g.size() == 2); // Check if g is a 2D vector in the settings file
 

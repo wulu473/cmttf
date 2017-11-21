@@ -32,13 +32,13 @@ class ParameterisedModuleBase: public ModuleBase
 {
   protected:
     template<typename T>
-      const T getParameter(const std::string&) const;
+      const T getParameter(const Parameters&, const std::string&) const;
     template<typename T>
-      const T getParameter(const std::string&, const T&) const;
+      const T getParameter(const Parameters&, const std::string&, const T&) const;
     template<typename T>
-      const std::vector<T> getVectorParameter(const std::string&) const;
+      const std::vector<T> getVectorParameter(const Parameters&, const std::string&) const;
   public:
-    virtual void initialiseFromFile();
+    virtual void initialiseFromParameters(const Parameters& params);
 };
 
 #include "ModuleBaseTemplates.cpp"

@@ -14,7 +14,7 @@ class Gnuplot : public Output
 
     virtual void initialise(const std::string filename, const real interval, 
                             const unsigned int frequency);
-    virtual void initialiseFromFile();
+    virtual void initialiseFromParameters(const Parameters& params);
 
 
     virtual void output(std::shared_ptr<DataPatch> data, const real t, 

@@ -27,9 +27,9 @@ std::shared_ptr<T> Factory::create(const std::string& classname)
 
 
 template<typename T>
-std::shared_ptr<T> Factory::createInitialised(const std::string& classname)
+std::shared_ptr<T> Factory::createInitialised(const std::string& classname, const Parameters& params)
 {
   std::shared_ptr<T> m = Factory::create<T>(classname);
-  m->initialiseFromFile();
+  m->initialiseFromParameters(params);
   return m;
 }

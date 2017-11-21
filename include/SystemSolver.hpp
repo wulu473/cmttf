@@ -13,7 +13,7 @@ class SystemSolver : public ParameterisedModuleBase
     virtual ~SystemSolver();
 
     virtual void initialise(const real finalT, const real maxDt);
-    virtual void initialiseFromFile();
+    virtual void initialiseFromParameters(const Parameters& params);
 
     virtual void advance(std::shared_ptr<DataPatch> data, const real t, const real dt, 
                  const unsigned int i) const;

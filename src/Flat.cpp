@@ -55,17 +55,17 @@ void Flat::initialise(const int N, const real L, const real R)
   m_nCells = N;
 }
 
-void Flat::initialiseFromFile()
+void Flat::initialiseFromParameters(const Parameters& params)
 {
   this->initialise(
       //! Number of cells
-      getParameter<int>("cells"),
+      getParameter<int>(params, "cells"),
 
       //! Left edge of domain
-      getParameter<real>("min"),
+      getParameter<real>(params, "min"),
 
       //! Right edge of domain
-      getParameter<real>("max")
+      getParameter<real>(params, "max")
   );
 }
 

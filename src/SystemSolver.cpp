@@ -24,11 +24,11 @@ void SystemSolver::initialise(const real TFin, const real maxDt)
   m_maxDt = maxDt;
 }
 
-void SystemSolver::initialiseFromFile()
+void SystemSolver::initialiseFromParameters(const Parameters& params)
 {
   initialise(
-    getParameter<real>("finalT"),
-    getParameter<real>("maxDt",std::numeric_limits<real>::max())
+    getParameter<real>(params, "finalT"),
+    getParameter<real>(params, "maxDt",std::numeric_limits<real>::max())
     );
 }
 

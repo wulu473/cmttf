@@ -15,7 +15,7 @@ class ImplicitSolver : public TimeIntegrator
 
     virtual void initialise(const real alpha); 
 
-    virtual void initialiseFromFile();
+    virtual void initialiseFromParameters(const Parameters& params);
 
     typedef Eigen::Matrix<real,Eigen::Dynamic,1> Vector;
     typedef Eigen::SparseMatrix<real,Eigen::RowMajor> SpMatRowMaj;

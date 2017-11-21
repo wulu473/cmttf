@@ -15,7 +15,7 @@ class Uniform : public InitialCondition
     virtual void setData(std::shared_ptr<DataPatch>) const;
 
     virtual void initialise(const State& state);
-    virtual void initialiseFromFile();
+    virtual void initialiseFromParameters(const Parameters&);
   protected:
   private:
     State m_state;

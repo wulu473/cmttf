@@ -25,7 +25,7 @@ ModuleBase::~ModuleBase()
 
 }
 
-void ParameterisedModuleBase::initialiseFromFile()
+void ParameterisedModuleBase::initialiseFromParameters(const Parameters& /*params*/)
 {
   BOOST_LOG_TRIVIAL(error) << this->name() << " does not require parameters. Consider inheriting from ModuleBase instead";
   throw InheritanceException();

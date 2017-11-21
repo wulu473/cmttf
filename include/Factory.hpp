@@ -28,7 +28,7 @@ class Factory
     static std::shared_ptr<T> create(const std::string& classname);
 
     template<typename T>
-    static std::shared_ptr<T> createInitialised(const std::string& classname);
+    static std::shared_ptr<T> createInitialised(const std::string& classname, const Parameters& params);
 
     static void registerit(const std::string& classname, Creator* creator);
   private:

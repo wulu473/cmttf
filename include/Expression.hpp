@@ -16,7 +16,7 @@ class Expression : public InitialCondition
     virtual void setData(std::shared_ptr<DataPatch>) const;
 
     virtual void initialise(const StateExpr& state);
-    virtual void initialiseFromFile();
+    virtual void initialiseFromParameters(const Parameters& params);
   protected:
   private:
     StateExpr m_state;

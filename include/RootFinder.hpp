@@ -23,7 +23,7 @@ class RootFinder : public ParameterisedModuleBase
     virtual std::string baseName() const final;
     RootFinder() {};
     virtual ~RootFinder() {};
-    virtual void initialiseFromFile() {};
+    virtual void initialiseFromParameters(const Parameters&) {};
 
     //! Indicate that all guesses are valid
     static bool allValid(EVector&);

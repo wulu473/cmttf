@@ -20,10 +20,10 @@ void ImplicitSolver::initialise(const real alpha)
   m_alpha = alpha;
 }
 
-void ImplicitSolver::initialiseFromFile()
+void ImplicitSolver::initialiseFromParameters(const Parameters& params)
 {
   this->initialise(
-      getParameter<real>("alpha",0.5)
+      getParameter<real>(params, "alpha",0.5)
   );
 }
 

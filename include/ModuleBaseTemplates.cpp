@@ -6,11 +6,11 @@
 #include "TimeSpaceDependReal.hpp"
 
 template<typename T>
-const T ParameterisedModuleBase::getParameter(const std::string& variableName) const
+const T ParameterisedModuleBase::getParameter(const Parameters& params, const std::string& variableName) const
 {
   std::ostringstream n;
   n << name() << "." << variableName;
-  return Parameters::getParameter<T>(n.str());
+  return params.getParameter<T>(n.str());
 }
 
 /** Specialisation for States.
@@ -19,9 +19,9 @@ const T ParameterisedModuleBase::getParameter(const std::string& variableName) c
 */
 template<>
 inline const State
-ParameterisedModuleBase::getParameter<State>(const std::string& variableName) const
+ParameterisedModuleBase::getParameter<State>(const Parameters& params, const std::string& variableName) const
 {
-  std::vector<real> stateVec = getVectorParameter<real>(variableName);
+  std::vector<real> stateVec = getVectorParameter<real>(params, variableName);
   State state;
   if(((unsigned int) state.size()) != stateVec.size())
   {
@@ -43,19 +43,19 @@ ParameterisedModuleBase::getParameter<State>(const std::string& variableName) co
 */
 template<>
 inline const TimeSpaceDependReal
-ParameterisedModuleBase::getParameter<TimeSpaceDependReal>(const std::string& variableName) const
+ParameterisedModuleBase::getParameter<TimeSpaceDependReal>(const Parameters& params, const std::string& variableName) const
 {
   std::ostringstream n;
   n << name() << "." << variableName;
-  return Parameters::getExpressionParameter(n.str());
+  return params.getExpressionParameter(n.str());
 }
 
 template<typename T>
-const T ParameterisedModuleBase::getParameter(const std::string& variableName, const T& defaultValue) const
+const T ParameterisedModuleBase::getParameter(const Parameters& params, const std::string& variableName, const T& defaultValue) const
 {
   std::ostringstream n;
   n << name() << "." << variableName;
-  return Parameters::getParameter<T>(n.str(),defaultValue);
+  return params.getParameter<T>(n.str(),defaultValue);
 }
 
 /** Specialisation for Expressions
@@ -64,17 +64,17 @@ const T ParameterisedModuleBase::getParameter(const std::string& variableName, c
 */
 template<>
 inline const std::vector<TimeSpaceDependReal> ParameterisedModuleBase::getVectorParameter(
-            const std::string& variableName) const
+            const Parameters& params, const std::string& variableName) const
 {
   std::ostringstream n;
   n << name() << "." << variableName;
-  return Parameters::getExpressionVectorParameter(n.str());
+  return params.getExpressionVectorParameter(n.str());
 }
 
 template<typename T>
-const std::vector<T> ParameterisedModuleBase::getVectorParameter(const std::string& variableName) const
+const std::vector<T> ParameterisedModuleBase::getVectorParameter(const Parameters& params, const std::string& variableName) const
 {
   std::ostringstream n;
   n << name() << "." << variableName;
-  return Parameters::getVectorParameter<T>(n.str());
+  return params.getVectorParameter<T>(n.str());
 }

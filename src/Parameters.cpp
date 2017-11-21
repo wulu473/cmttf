@@ -4,8 +4,6 @@
 
 #include "TimeSpaceDependReal.hpp"
 
-libconfig::Config Parameters::m_cfg;
-
 void Parameters::readFile(const std::string& fileName)
 {
   try
@@ -24,7 +22,7 @@ void Parameters::readFile(const std::string& fileName)
   }
 }
 
-bool Parameters::exists(const std::string& name)
+bool Parameters::exists(const std::string& name) const
 {
   if(!m_cfg.exists(name))
   {
@@ -36,7 +34,7 @@ bool Parameters::exists(const std::string& name)
   return isActive;
 }
 
-int Parameters::getLength(const std::string& name)
+int Parameters::getLength(const std::string& name) const
 {
   if(m_cfg.exists(name))
   {
@@ -49,7 +47,7 @@ int Parameters::getLength(const std::string& name)
   }
 }
 
-std::string Parameters::activeModule(const std::string& parentModule)
+std::string Parameters::activeModule(const std::string& parentModule) const
 {
   std::list<std::string> moduleNames = activeModules(parentModule);
   if (moduleNames.size() > 1)
@@ -64,7 +62,7 @@ std::string Parameters::activeModule(const std::string& parentModule)
   return moduleNames.front();	
 }
 
-std::list<std::string> Parameters::activeModules(const std::string& parentModule)
+std::list<std::string> Parameters::activeModules(const std::string& parentModule) const
 {
   std::list<std::string> moduleNames;
   try
@@ -89,7 +87,7 @@ std::list<std::string> Parameters::activeModules(const std::string& parentModule
 //! Return list of all active modules
 /* Iterate through all modules in the settings file and return a list of active ones
  */
-std::list<std::string> Parameters::allActiveModules()
+std::list<std::string> Parameters::allActiveModules() const
 {
   std::list<std::string> moduleNames;
   libconfig::Setting& root = m_cfg.getRoot();
@@ -120,7 +118,7 @@ std::list<std::string> Parameters::allActiveModules()
  *
  */
 const TimeSpaceDependReal
-Parameters::getExpressionParameter(const std::string& name)
+Parameters::getExpressionParameter(const std::string& name) const
 {
   const std::string param_str = getParameter<std::string>(name);
   return TimeSpaceDependReal(param_str);
@@ -135,7 +133,7 @@ Parameters::getExpressionParameter(const std::string& name)
  *
  */
 const std::vector<TimeSpaceDependReal>
-Parameters::getExpressionVectorParameter(const std::string& name)
+Parameters::getExpressionVectorParameter(const std::string& name) const
 {
   const std::vector<std::string> param_str_vec = getVectorParameter<std::string>(name);
   std::vector<TimeSpaceDependReal> expressions;
