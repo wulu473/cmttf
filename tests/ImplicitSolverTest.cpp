@@ -7,6 +7,7 @@
 #include "ModuleList.hpp"
 #include "Flat.hpp"
 #include "Transmissive.hpp"
+#include "Periodic.hpp"
 
 #include "System.hpp"
 
@@ -27,6 +28,9 @@ BOOST_AUTO_TEST_CASE(setupFunctionRand)
   flat->initialise(5,0.,0.5);
   ModuleList::addModule(flat);
 
+  std::shared_ptr<BoundaryConditionContainer> bcs = std::make_shared<BoundaryConditionContainer>();
+  bcs->initialise(std::make_shared<Transmissive>(), std::make_shared<Transmissive>());
+
   ImplicitSolver::Vector states_old(10);
   states_old <<  7.55208555e-05,4.52495383e-01,
                  1.00000000e-06,0.00000000e+00,
@@ -45,6 +49,7 @@ BOOST_AUTO_TEST_CASE(setupFunctionRand)
 
   std::shared_ptr<ImplicitSolver> solver = std::make_shared<ImplicitSolver>();
   solver->initialise(1.0);
+  solver->setBoundaryConditions(bcs);
 
 
   ImplicitSolver::Vector f(10);
@@ -66,6 +71,94 @@ BOOST_AUTO_TEST_CASE(setupFunctionRand)
   ModuleList::clear();
 }
 
+BOOST_AUTO_TEST_CASE(setupFunctionRandPeriodicRight)
+{
+  std::shared_ptr<System> sys = std::make_shared<System>(); 
+  sys->initialise(1.,1.1,1.2,111,0.12,TimeSpaceDependReal("1.23"),TimeSpaceDependReal("4."));
+  ModuleList::addModule(sys);
+
+  std::shared_ptr<Flat> flat = std::make_shared<Flat>();
+  flat->initialise(5,0.,0.5);
+  ModuleList::addModule(flat);
+
+  std::shared_ptr<BoundaryConditionContainer> bcs = std::make_shared<BoundaryConditionContainer>();
+  bcs->initialise(std::make_shared<Periodic>(), std::make_shared<Periodic>());
+
+  // Check right boundary condition by cycling through the states and then only test the last flux
+  ImplicitSolver::Vector states_old(10);
+  states_old <<  5.62725541e-05,5.17095798e-01,
+                 9.07299124e-05,3.76788153e-01,
+                 7.55208555e-05,4.52495383e-01,
+                 1.00000000e-06,0.00000000e+00,
+                 2.73342916e-05,1.36632144e-01;
+
+  ImplicitSolver::Vector states_new(10);
+
+  states_new <<  9.07299124e-05,3.76788153e-01,
+                 5.62725541e-05,5.17095798e-01,
+                 1.00000000e-06,3.00000000e-01,
+                 2.25208555e-05,1.52495383e-01,
+                 3.07299124e-05,3.76788153e-01;
+
+  std::shared_ptr<ImplicitSolver> solver = std::make_shared<ImplicitSolver>();
+  solver->initialise(1.0);
+  solver->setBoundaryConditions(bcs);
+
+
+  ImplicitSolver::Vector f(10);
+  f.fill(1.0);
+
+  solver->function(states_old,states_new,0.2,0.,f);
+
+  BOOST_CHECK_CLOSE(f[8],-0.79996585274956999, 1e-10);
+  BOOST_CHECK_CLOSE(f[9], 196857477.9412564  , 1e-10);
+
+  ModuleList::clear();
+}
+
+BOOST_AUTO_TEST_CASE(setupFunctionRandPeriodicLeft)
+{
+  std::shared_ptr<System> sys = std::make_shared<System>(); 
+  sys->initialise(1.,1.1,1.2,111,0.12,TimeSpaceDependReal("1.23"),TimeSpaceDependReal("4."));
+  ModuleList::addModule(sys);
+
+  std::shared_ptr<Flat> flat = std::make_shared<Flat>();
+  flat->initialise(5,0.,0.5);
+  ModuleList::addModule(flat);
+
+  std::shared_ptr<BoundaryConditionContainer> bcs = std::make_shared<BoundaryConditionContainer>();
+  bcs->initialise(std::make_shared<Periodic>(), std::make_shared<Periodic>());
+
+  // Check left boundary condition by cycling through the states and then only test the last flux
+  ImplicitSolver::Vector states_old(10);
+  states_old <<  2.73342916e-05,1.36632144e-01,
+                 5.62725541e-05,5.17095798e-01,
+                 9.07299124e-05,3.76788153e-01,
+                 7.55208555e-05,4.52495383e-01,
+                 1.00000000e-06,0.00000000e+00;  
+
+  ImplicitSolver::Vector states_new(10);
+  states_new <<  3.07299124e-05,3.76788153e-01,
+                 9.07299124e-05,3.76788153e-01,
+                 5.62725541e-05,5.17095798e-01,
+                 1.00000000e-06,3.00000000e-01,
+                 2.25208555e-05,1.52495383e-01;
+
+  std::shared_ptr<ImplicitSolver> solver = std::make_shared<ImplicitSolver>();
+  solver->initialise(1.0);
+  solver->setBoundaryConditions(bcs);
+
+
+  ImplicitSolver::Vector f(10);
+  f.fill(1.0);
+
+  solver->function(states_old,states_new,0.2,0.,f);
+
+  BOOST_CHECK_CLOSE(f[0],-0.79996585274956999, 1e-10);
+  BOOST_CHECK_CLOSE(f[1], 196857477.9412564  , 1e-10);
+
+  ModuleList::clear();
+}
 BOOST_AUTO_TEST_CASE(setupJacobianRand)
 {
   std::shared_ptr<System> sys = std::make_shared<System>(); 

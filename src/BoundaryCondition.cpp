@@ -54,6 +54,9 @@ void BoundaryConditionContainer::initialise(const std::shared_ptr<BoundaryCondit
 {
   m_left = left;
   m_right = right;
+
+  m_left->setOrientation(BoundaryCondition::Left);
+  m_right->setOrientation(BoundaryCondition::Right);
 }
 
 void BoundaryConditionContainer::initialiseFromParameters(const Parameters& params)
@@ -61,12 +64,9 @@ void BoundaryConditionContainer::initialiseFromParameters(const Parameters& para
   std::string lStr = params.activeModule("BoundaryConditions.Left"); 
   std::string rStr = params.activeModule("BoundaryConditions.Right"); 
 
-  m_left = Factory::create<BoundaryCondition>(lStr);
-  m_right = Factory::create<BoundaryCondition>(rStr);
-
-  m_left->setOrientation(BoundaryCondition::Left);
-  m_right->setOrientation(BoundaryCondition::Right);
+  this->initialise(
+      Factory::create<BoundaryCondition>(lStr),
+      Factory::create<BoundaryCondition>(rStr)
+      );
 }
-
-
 

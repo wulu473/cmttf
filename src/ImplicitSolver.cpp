@@ -39,16 +39,20 @@ void ImplicitSolver::initialiseFromParameters(const Parameters& params)
  */
 void ImplicitSolver::function(const Vector& states_old, const Vector& states_new, const real dt, const real t, Vector& f) const
 {
-  static const std::shared_ptr<const System> system = ModuleList::uniqueModule<System>();
-  static const std::shared_ptr<const Domain> domain = ModuleList::uniqueModule<Domain>();
+  const std::shared_ptr<const System> system = ModuleList::uniqueModule<System>();
+  const std::shared_ptr<const Domain> domain = ModuleList::uniqueModule<Domain>();
 
   assert(f.size() == domain->cells()*SystemAttributes::stateSize);
   assert(states_old.size() == states_new.size());
   assert(states_old.size() == f.size());
+  assert(m_bcs); // Check if boundary conditions were set
 
   const real ds = domain->ds();
 
   const State factorDt = system->factorTimeDeriv();
+
+  const std::shared_ptr<const BoundaryCondition> bcL = m_bcs->left();
+  const std::shared_ptr<const BoundaryCondition> bcR = m_bcs->right();
 
   const int stenS = SystemAttributes::stencilSize;
   const int statS = SystemAttributes::stateSize;
@@ -78,8 +82,8 @@ void ImplicitSolver::function(const Vector& states_old, const Vector& states_new
           periodicDomainState_new[u] = states_new[(end+k)*statS+u];
           periodicDomainState_old[u] = states_old[(end+k)*statS+u];
         }
-        stencil_new[j] = domainState_new;
-        stencil_old[j] = domainState_old;
+        stencil_new[j] = bcL->ghostState(domainState_new,periodicDomainState_new);
+        stencil_old[j] = bcL->ghostState(domainState_old,periodicDomainState_old);
       }
       else if(domain->end()<=k)
       {
@@ -96,8 +100,8 @@ void ImplicitSolver::function(const Vector& states_old, const Vector& states_new
           periodicDomainState_new[u] = states_new[(k-end)*statS+u];
           periodicDomainState_old[u] = states_old[(k-end)*statS+u];
         }
-        stencil_new[j] = domainState_new;
-        stencil_old[j] = domainState_old;
+        stencil_new[j] = bcR->ghostState(domainState_new,periodicDomainState_new);
+        stencil_old[j] = bcR->ghostState(domainState_old,periodicDomainState_old);
       }
       else
       {
@@ -124,11 +128,12 @@ void ImplicitSolver::jacobian(const Vector& states, const real dt, const real t,
   const int stenS = SystemAttributes::stencilSize;
   const int statS = SystemAttributes::stateSize;
 
-  const static std::shared_ptr<const System> system = ModuleList::uniqueModule<System>();
-  const static std::shared_ptr<const Domain> domain = ModuleList::uniqueModule<Domain>();
+  const std::shared_ptr<const System> system = ModuleList::uniqueModule<System>();
+  const std::shared_ptr<const Domain> domain = ModuleList::uniqueModule<Domain>();
 
-  const static std::shared_ptr<const BoundaryCondition> bcL = m_bcs->left();
-  const static std::shared_ptr<const BoundaryCondition> bcR = m_bcs->right();
+  assert(m_bcs); // Check if boundary conditions were set
+  const std::shared_ptr<const BoundaryCondition> bcL = m_bcs->left();
+  const std::shared_ptr<const BoundaryCondition> bcR = m_bcs->right();
 
   assert((unsigned int)(J.rows()) == domain->cells()*statS);
   assert((unsigned int)(J.cols()) == domain->cells()*statS);
@@ -238,10 +243,10 @@ void ImplicitSolver::advance(std::shared_ptr<DataPatch> states, const real dt, c
 {
   BOOST_LOG_TRIVIAL(debug) << "ImplicitSolver: Advancing data patch by dt = " << dt << ", t = " << t;
 
-  static const std::shared_ptr<const RootFinder> solver = ModuleList::uniqueModule<RootFinder>();
+  const std::shared_ptr<const RootFinder> solver = ModuleList::uniqueModule<RootFinder>();
 
-  const static std::shared_ptr<const BoundaryCondition> bcL = m_bcs->left();
-  const static std::shared_ptr<const BoundaryCondition> bcR = m_bcs->right();
+  const std::shared_ptr<const BoundaryCondition> bcL = m_bcs->left();
+  const std::shared_ptr<const BoundaryCondition> bcR = m_bcs->right();
 
   // IMPROVE this by using Eigen::map and not copy all the states
   const unsigned int statS = SystemAttributes::stateSize;
@@ -311,7 +316,7 @@ void ImplicitSolver::advance(std::shared_ptr<DataPatch> states, const real dt, c
 bool ImplicitSolver::checkValid(Vector& states) const
 {
   const int statS = SystemAttributes::stateSize;
-  static const std::shared_ptr<const System> system = ModuleList::uniqueModule<System>();
+  const std::shared_ptr<const System> system = ModuleList::uniqueModule<System>();
 
   assert((states.size() % statS) == 0);
   
