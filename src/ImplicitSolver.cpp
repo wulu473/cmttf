@@ -7,6 +7,7 @@
 #include "ModuleList.hpp"
 #include "System.hpp"
 #include "RootFinder.hpp"
+#include "Periodic.hpp"
 
 REGISTERIMPL(ImplicitSolver);
 
@@ -123,6 +124,13 @@ void ImplicitSolver::function(const Vector& states_old, const Vector& states_new
   }
 }
 
+//!
+/**
+ *
+ * J_{i j} = \partial
+ *
+ * J [out] - Jacobian of function
+ */
 void ImplicitSolver::jacobian(const Vector& states, const real dt, const real t, SpMatRowMaj& J) const
 {
   const int stenS = SystemAttributes::stencilSize;
@@ -134,6 +142,10 @@ void ImplicitSolver::jacobian(const Vector& states, const real dt, const real t,
   assert(m_bcs); // Check if boundary conditions were set
   const std::shared_ptr<const BoundaryCondition> bcL = m_bcs->left();
   const std::shared_ptr<const BoundaryCondition> bcR = m_bcs->right();
+
+  // TODO Find a better way to incorporate periodic boundary conditions
+  const bool isPeriodicL = std::dynamic_pointer_cast<const Periodic>(bcL).use_count() > 0;
+  const bool isPeriodicR = std::dynamic_pointer_cast<const Periodic>(bcR).use_count() > 0;
 
   assert((unsigned int)(J.rows()) == domain->cells()*statS);
   assert((unsigned int)(J.cols()) == domain->cells()*statS);
@@ -199,7 +211,7 @@ void ImplicitSolver::jacobian(const Vector& states, const real dt, const real t,
           domainState[i_state] = states[statS*(2*domain->end()-i_stenc_cell-1)+i_state];
           periodicDomainState[i_state] = states[(i_stenc_cell-end)*statS+i_state];
         }
-        stencil[i_stenc] = domainState;
+        stencil[i_stenc] = bcR->ghostState(domainState,periodicDomainState);
       }
       else
       {
@@ -215,8 +227,20 @@ void ImplicitSolver::jacobian(const Vector& states, const real dt, const real t,
     // J_loc is column major so iterate over rows faster
     for(unsigned int J_loc_col=0;J_loc_col<statS*(stenS*2+1);J_loc_col++)
     {
-      const int i_stenc = cell*statS - (signed int)(stenS*statS) + (signed int)(J_loc_col);
-      const int i_stenc_cell = cell-(signed int)(stenS)+(signed int)(J_loc_col)/(signed int)(statS);
+      int i_stenc = cell*statS - (signed int)(stenS*statS) + (signed int)(J_loc_col);
+      int i_stenc_cell = cell-(signed int)(stenS)+(signed int)(J_loc_col)/(signed int)(statS);
+
+      if(isPeriodicL && i_stenc_cell < 0)
+      {
+        i_stenc = (i_stenc+domain->end()*statS) % (domain->end()*statS);
+        i_stenc_cell = (i_stenc_cell + domain->end()) % domain->end();
+      }
+      if(isPeriodicR && domain->end() <= i_stenc_cell )
+      {
+        i_stenc = i_stenc % (domain->end()*statS);
+        i_stenc_cell = i_stenc_cell % domain->end();
+      }
+
       if(domain->begin() <= i_stenc_cell && 
                             i_stenc_cell < domain->end())
       {

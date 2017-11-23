@@ -256,6 +256,100 @@ BOOST_AUTO_TEST_CASE(setupJacobianRand)
   ModuleList::clear();
 }
 
+BOOST_AUTO_TEST_CASE(setupJacobianRandPeriodicLeft)
+{
+  std::shared_ptr<System> sys = std::make_shared<System>(); 
+  sys->initialise(1.,1.1,1.2,111,0.12,TimeSpaceDependReal("1.23"),TimeSpaceDependReal("4."));
+  ModuleList::addModule(sys);
+
+  std::shared_ptr<Flat> flat = std::make_shared<Flat>();
+  flat->initialise(5,0.,0.5);
+  ModuleList::addModule(flat);
+
+  std::shared_ptr<BoundaryConditionContainer> bcs = std::make_shared<BoundaryConditionContainer>();
+  bcs->initialise(std::make_shared<Periodic>(), std::make_shared<Periodic>());
+
+  ImplicitSolver::Vector states(10);
+
+  states     <<  3.07299124e-05,3.76788153e-01,
+                 9.07299124e-05,3.76788153e-01,
+                 5.62725541e-05,5.17095798e-01,
+                 1.00000000e-06,3.00000000e-01,
+                 2.25208555e-05,1.52495383e-01;
+
+  std::shared_ptr<ImplicitSolver> solver = std::make_shared<ImplicitSolver>();
+  solver->initialise(1.0);
+  solver->setBoundaryConditions(bcs);
+
+  ImplicitSolver::SpMatRowMaj J(10,10);
+
+  solver->jacobian(states,0.2,0.,J);
+
+  BOOST_CHECK_CLOSE(J.coeff(0,8), -1.52495383e-01, 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(0,9), -2.25208555e-05, 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(0,0),  1.00000000e+00, 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(0,1),  0.00000000e+00, 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(0,2),  3.76788153e-01, 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(0,3),  9.07299124e-05, 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(1,6),  908488.78373531031  , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(1,7), -21.176664669820742  , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(1,8), -13965.484679269044  , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(1,9), -0.60460461306418289 , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(1,0), -12812429872610.865  , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(1,1),  522488324.03927457  , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(1,2), -239019.80109609151  , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(1,3),  0.69355398082089326 , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(1,4),  120590.41759824802  , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(1,5), -91.777859074411268  , 1e-10);
+  ModuleList::clear();
+}
+
+BOOST_AUTO_TEST_CASE(setupJacobianRandPeriodicRight)
+{
+  std::shared_ptr<System> sys = std::make_shared<System>(); 
+  sys->initialise(1.,1.1,1.2,111,0.12,TimeSpaceDependReal("1.23"),TimeSpaceDependReal("4."));
+  ModuleList::addModule(sys);
+
+  std::shared_ptr<Flat> flat = std::make_shared<Flat>();
+  flat->initialise(5,0.,0.5);
+  ModuleList::addModule(flat);
+
+  std::shared_ptr<BoundaryConditionContainer> bcs = std::make_shared<BoundaryConditionContainer>();
+  bcs->initialise(std::make_shared<Periodic>(), std::make_shared<Periodic>());
+
+  ImplicitSolver::Vector states(10);
+  states     <<  9.07299124e-05,3.76788153e-01,
+                 5.62725541e-05,5.17095798e-01,
+                 1.00000000e-06,3.00000000e-01,
+                 2.25208555e-05,1.52495383e-01,
+                 3.07299124e-05,3.76788153e-01;
+  std::shared_ptr<ImplicitSolver> solver = std::make_shared<ImplicitSolver>();
+  solver->initialise(1.0);
+  solver->setBoundaryConditions(bcs);
+
+  ImplicitSolver::SpMatRowMaj J(10,10);
+
+  solver->jacobian(states,0.2,0.,J);
+
+  BOOST_CHECK_CLOSE(J.coeff(8,6), -1.52495383e-01, 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(8,7), -2.25208555e-05, 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(8,8),  1.00000000e+00, 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(8,9),  0.00000000e+00, 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(8,0),  3.76788153e-01, 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(8,1),  9.07299124e-05, 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(9,4),  908488.78373531031  , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(9,5), -21.176664669820742  , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(9,6), -13965.484679269044  , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(9,7), -0.60460461306418289 , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(9,8), -12812429872610.865  , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(9,9),  522488324.03927457  , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(9,0), -239019.80109609151  , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(9,1),  0.69355398082089326 , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(9,2),  120590.41759824802  , 1e-10);
+  BOOST_CHECK_CLOSE(J.coeff(9,3), -91.777859074411268  , 1e-10);
+
+  ModuleList::clear();
+}
 
 BOOST_AUTO_TEST_CASE(checkValidTest)
 {
