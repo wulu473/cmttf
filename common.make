@@ -69,7 +69,7 @@ objects/$(SYSTEM)/src/%_debug.o: src/%.cpp | object-dirs
 # Compile unit tests
 objects/$(SYSTEM)/tests/%.o: tests/%.cpp | object-dirs
 	@echo -n "Compiling $<..."	
-	@$(NVCC) $(INCLUDES) $(CXXFLAGS) -DBOOST_LOG_DYN_LINK -DBOOST_TEST_DYN_LINK $(CUDAFLAGS) -c $< -o $@
+	@$(NVCC) $(INCLUDES) $(CXXFLAGS_DEBUG) -DBOOST_LOG_DYN_LINK -DBOOST_TEST_DYN_LINK $(CUDAFLAGS) -c $< -o $@
 	@echo " done"
 
 # Link unit tests and run
@@ -82,9 +82,9 @@ $(SYSTEM)-unit-tests-run : $(SYSTEM)-unit-tests
 	@./$(SYSTEM)-unit-tests
 
 # Compile the unit tests
-$(SYSTEM)-unit-tests: $(TESTOBJS) $(OBJS) $(SYSOBJS) | object-dirs
+$(SYSTEM)-unit-tests: $(TESTOBJS) $(OBJS_DEBUG) $(SYSOBJS_DEBUG) | object-dirs
 	@echo  -n "Linking $@..."
-	@$(NVCC) $(CXXFLAGS) $(CUDAFLAGS) $(TESTOBJS) $(SYSOBJS) $(filter-out objects/$(SYSTEM)/src/main.o, $(OBJS)) $(LDFLAGS) $(LDLIBS) -o $@
+	@$(NVCC) $(CXXFLAGS_DEBUG) $(CUDAFLAGS) $(TESTOBJS) $(SYSOBJS_DEBUG) $(filter-out objects/$(SYSTEM)/src/main_debug.o, $(OBJS_DEBUG)) $(LDFLAGS) $(LDLIBS) -o $@
 	@echo " done"
 
 # Link program
