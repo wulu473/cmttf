@@ -12,6 +12,8 @@
 class System : public SystemBase
 {
   public:
+    typedef SystemAttributes::VariableNames VariableNames;
+
     virtual State F(const StencilArray& states, const real dx, const real x, const real t) const;
     virtual State FLinear(const StencilArray& /*states_new*/, const StencilArray& /*states_old*/,
                   const real /*dx*/, const real /*x*/, const real /*t*/) const
@@ -30,6 +32,8 @@ class System : public SystemBase
     void initialiseFromParameters(const Parameters& params);
 
     virtual bool checkValid(Ref<State> state) const;
+
+    virtual VariableNames variableNames() const;
   private:
     // Space and time dependent parameters
 

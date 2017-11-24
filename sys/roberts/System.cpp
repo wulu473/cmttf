@@ -5,6 +5,11 @@
 #include "Domain.hpp"
 #include "ModuleList.hpp"
 
+System::VariableNames System::variableNames() const
+{
+  return VariableNames{{"h_w","u_w"}};
+}
+
 State System::F(const StencilArray& states, const real ds, const real s, const real t) const
 {
   static const std::shared_ptr<const Domain> dom = ModuleList::uniqueModule<Domain>();
