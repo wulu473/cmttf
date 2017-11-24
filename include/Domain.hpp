@@ -18,6 +18,9 @@ class Domain : public ParameterisedModuleBase
     //! i-th basis vector
     virtual Coord x_(const unsigned int i, const real s) const;
 
+    //! normal vector
+    virtual Coord n(const real s) const;
+
     //! Return surface coordinate of cell
     virtual real s(const int i) const;
 

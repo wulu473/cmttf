@@ -36,6 +36,14 @@ Coord Domain::x_(const unsigned int /*i*/, const real /*s*/) const
   return Coord(0.);
 }
 
+//! Normal vector
+Coord Domain::n(const real s) const
+{
+  // By convention the second basis vector is the unnormalised normal
+  Coord n = this->x_(1,s);
+  return n/n.norm();
+}
+
 //! Surface coordinate
 real Domain::s(const int i) const
 {
