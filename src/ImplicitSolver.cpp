@@ -290,6 +290,7 @@ void ImplicitSolver::advance(std::shared_ptr<DataPatch> states, const real dt, c
       {
         // Can't use Eigen::map here since states is column major. We could change the ordering
         // but this is an intricate refactoring and probably not worth it at this point
+        //  Not true any more - Look into this
         states_vec_old[i*statS+j] = (*states)(i,j);
         states_vec_new[i*statS+j] = (*states)(i,j);
       }

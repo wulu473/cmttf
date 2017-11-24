@@ -6,7 +6,7 @@
 
 #include "Attributes.hpp"
 
-typedef Eigen::Matrix<real,Eigen::Dynamic,SystemAttributes::stateSize> DataPatchBase;
+typedef Eigen::Matrix<real,Eigen::Dynamic,SystemAttributes::stateSize,Eigen::RowMajor> DataPatchBase;
 
 class DataPatch : public DataPatchBase
 {
