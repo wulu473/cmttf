@@ -25,6 +25,12 @@ bool SystemBase::checkValid(Ref<State> /*state*/) const
   return true;
 }
 
+DerivedVariablesMap SystemBase::derivedVariables() const
+{
+  // Assume no derived variables
+  return DerivedVariablesMap();
+}
+
 //! Return a factor the time derivative is scaled with
 State SystemBase::factorTimeDeriv() const
 {

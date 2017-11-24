@@ -11,6 +11,9 @@ class SystemBase : public ParameterisedModuleBase
     virtual std::string moduleName() const final; // don't allow systems to have other names
     virtual int stencilSize() const;
 
+    //! Return derived variables
+    virtual DerivedVariablesMap derivedVariables() const;
+
     //! A factor that is applied to the timer derivative term
     virtual State factorTimeDeriv() const;
 

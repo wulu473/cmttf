@@ -73,22 +73,44 @@ void Gnuplot::output(const std::shared_ptr<DataPatch> data, const real t,
     file << "# 1: x" << std::endl;
     file << "# 2: y" << std::endl;
     file << "# 3: s" << std::endl;
+    unsigned int column = 4;
     const SystemAttributes::VariableNames names = ModuleList::uniqueModule<System>()->variableNames();
     for(unsigned int i=0;i<names.size();i++)
     {
-      file << "# " << i+4 << ": " << names[i] << std::endl;
+      file << "# " << column << ": " << names[i] << std::endl;
+      column++;
+    }
+
+    const DerivedVariablesMap derivedVariables = ModuleList::uniqueModule<System>()->derivedVariables();
+    for( auto derivedVariablePair: derivedVariables)
+    {
+      file << "# " << column << ": " << derivedVariablePair.first << std::endl;
+      column++;
     }
 
     for(unsigned int cell=0; cell<data->rows();cell++)
     {
       const real s = domain->s(cell);
       const Coord x = domain->x(s);
+      const Coord n = domain->n(s);
 
+      // Write positions
       file << std::setprecision(std::numeric_limits<real>::digits10) << x[0] << " " << x[1] << " " << s << " ";
+
+      // Write state
+      const Eigen::Map<State> state = Eigen::Map<State>(&((*data)(cell,0)));
       for(unsigned int i=0; i<SystemAttributes::stateSize;i++)
       {
-        file << std::setprecision(std::numeric_limits<real>::digits10) << (*data)(cell,i) << " ";
+        file << std::setprecision(std::numeric_limits<real>::digits10) << state[i] << " ";
       }
+
+      // Write derived variables
+      for( auto derivedVariablePair: derivedVariables)
+      {
+        auto derivedVar = derivedVariablePair.second;
+        file << std::setprecision(std::numeric_limits<real>::digits10) << derivedVar(state,x,n);
+      }
+
       file << std::endl;	
     }
     file.close();
