@@ -33,6 +33,9 @@ class System : public SystemBase
 
     virtual bool checkValid(Ref<State> state) const;
 
+    // Output related functions
+    //
+    //! Define names of state elements
     virtual VariableNames variableNames() const;
   private:
     // Space and time dependent parameters

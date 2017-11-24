@@ -24,7 +24,8 @@ typedef Eigen::Matrix<real,2,1> Coord;
  * The function expects a state, x coordinate and normal of the cell
  *
  */
-typedef std::map<std::string,std::function<real(State,Coord,Coord)> > DerivedVariablesMap;
+typedef std::pair<std::string, std::function<real(State,Coord,Coord)> > DerivedVariablePair;
+typedef std::map<std::string, std::function<real(State,Coord,Coord)> > DerivedVariablesMap;
 
 class NotImplemented : public std::exception
 {
