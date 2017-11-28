@@ -72,8 +72,11 @@ void Gnuplot::output(const std::shared_ptr<DataPatch> data, const real t,
     file << "# t = " << t << std::endl;
     file << "# 1: x" << std::endl;
     file << "# 2: y" << std::endl;
-    file << "# 3: s" << std::endl;
-    unsigned int column = 4;
+    file << "# 3: n_x" << std::endl;
+    file << "# 4: n_y" << std::endl;
+    file << "# 5: s" << std::endl;
+
+    unsigned int column = 6;
     const SystemAttributes::VariableNames names = ModuleList::uniqueModule<System>()->variableNames();
     for(unsigned int i=0;i<names.size();i++)
     {
@@ -95,7 +98,8 @@ void Gnuplot::output(const std::shared_ptr<DataPatch> data, const real t,
       const Coord n = domain->n(s);
 
       // Write positions
-      file << std::setprecision(std::numeric_limits<real>::digits10) << x[0] << " " << x[1] << " " << s << " ";
+      file << std::setprecision(std::numeric_limits<real>::digits10)
+           << x[0] << " " << x[1] << " " << n[0] << " " << n[1] << " " << s << " ";
 
       // Write state
       const Eigen::Map<State> state = Eigen::Map<State>(&((*data)(cell,0)));
