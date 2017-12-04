@@ -30,8 +30,7 @@ Coord Cylinder::x(const real s) const
 Coord Cylinder::n(const real s) const
 {
   const real theta = s/m_radius;
-  return m_radius*Coord(cos(theta),
-                        sin(theta));
+  return Coord(cos(theta),sin(theta));
 }
 
 Coord Cylinder::x_(const unsigned int i, const real s) const

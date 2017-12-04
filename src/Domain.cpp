@@ -40,8 +40,7 @@ Coord Domain::x_(const unsigned int /*i*/, const real /*s*/) const
 Coord Domain::n(const real s) const
 {
   // By convention the second basis vector is the unnormalised normal
-  Coord n = this->x_(1,s);
-  return n/n.norm();
+  return this->x_(1,s).normalized();
 }
 
 //! Surface coordinate

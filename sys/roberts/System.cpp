@@ -114,10 +114,16 @@ void System::initialise(const real mu, const real rho, const real g1, const real
   m_beta = beta;
   m_g = Coord(g1,g2);
   m_gMag = m_g.norm();
-  if(m_gMag > 0)
+  if(m_gMag > std::numeric_limits<real>::epsilon())
   {
     m_g /= m_gMag;
   }
+  else if(m_gMag > 0)
+  {
+    BOOST_LOG_TRIVIAL(error) << "The magnitude of gravity is very small. Disable gravitational effects.";
+    m_gMag = 0.;
+  }
+  // else g is exactly 0 from settings file. Don't warn about this
 }
 
 void System::initialiseFromParameters(const Parameters& params)
