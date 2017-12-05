@@ -6,6 +6,7 @@ install:
   - source travis-scripts/install-exprtk.sh
   - source travis-scripts/install-eigen.sh
   - touch githash.h
+  - mkdir -p output/roberts
   - sudo pip3 install filelock
 
 # Enable C++ support
@@ -17,10 +18,8 @@ compiler:
 
 # Build steps
 script:
-  - make -f travis.make SYSTEM=roberts unit-tests
+  - make -f travis.make SYSTEM=roberts roberts-unit-tests
   - ./roberts-unit-tests --log_level=all
-  - make -f travis.make SYSTEM=roberts regression-tests
-    #  - make -f travis.make SYSTEM=myers
-    #  - make -f travis.make SYSTEM=roberts unit-tests
-#  - make -f travis.make SYSTEM=myers unit-tests
+  - make -f travis.make SYSTEM=roberts
+  - ./regression-tests -s roberts
 
