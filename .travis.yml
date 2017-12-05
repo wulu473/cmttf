@@ -1,10 +1,11 @@
 sudo: required
 
 install:
-  - sudo apt-get install libboost-all-dev libconfig++-dev libboost-test-dev
+  - sudo apt-get install libconfig++-dev
   - source travis-scripts/install-cuda-trusty.sh
   - source travis-scripts/install-exprtk.sh
   - source travis-scripts/install-eigen.sh
+  - source travis-scripts/install-boost.sh
   - touch githash.h
 
 # Enable C++ support
@@ -16,8 +17,8 @@ compiler:
 
 # Build steps
 script:
-  - make -f travis.make SYSTEM=roberts
-  - make -f travis.make SYSTEM=myers
-#  - make -f travis.make SYSTEM=roberts unit-tests
+  - make -f travis.make SYSTEM=roberts test
+    #  - make -f travis.make SYSTEM=myers
+    #  - make -f travis.make SYSTEM=roberts unit-tests
 #  - make -f travis.make SYSTEM=myers unit-tests
 
