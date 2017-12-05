@@ -1,5 +1,5 @@
 
-#include "NewtonRaphson.hpp"
+#include "NewtonRaphson_CUDA.hpp"
 
 #include <boost/log/trivial.hpp>
 
@@ -12,17 +12,17 @@
 #include <helper_cuda.h>
 
 
-REGISTERIMPL(NewtonRaphson);
+REGISTERIMPL(NewtonRaphson_CUDA);
 
-std::string NewtonRaphson::moduleName() const
+std::string NewtonRaphson_CUDA::moduleName() const
 {
-  return "NewtonRaphson";
+  return "NewtonRaphson_CUDA";
 }
 
 /**
  * x [in,out] Guess and result
  */
-void NewtonRaphson::solveSparse(const std::function<void(const EVector&, EVector&)>& fun, 
+void NewtonRaphson_CUDA::solveSparse(const std::function<void(const EVector&, EVector&)>& fun, 
         const std::function<void(const EVector&, ESpMatRowMaj&)>& jac, EVector& x,
         const std::function<bool(EVector&)>& restrictDomain) const
 {

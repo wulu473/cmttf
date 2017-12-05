@@ -11,14 +11,18 @@ import sys
 
 SCRIPT_START_TIME=time.time()
 
-def runTests(tests):
+def runTests(tests,useCUDA=True):
+    extra_options = []
+    if not useCUDA:
+        extra_options.append("--disable-cuda")
+
     for test in tests:
         ret = 0
         exe = os.path.dirname(test)
         with open("output/%s.out"%(test),"w") as out:
             print("Running test %s... "%(test),end="",flush=True)
             try:
-                ret = subprocess.call(["./"+exe,"validationSettings/%s.cfg"%(test)],shell=False,stdout=out,stderr=subprocess.STDOUT, timeout=2700)
+                ret = subprocess.call(["./"+exe,"validationSettings/%s.cfg"%(test)] + extra_options,shell=False,stdout=out,stderr=subprocess.STDOUT, timeout=2700)
             except KeyboardInterrupt:
                 out.write("Keyboard interrupt")
                 ret = 1
@@ -79,6 +83,7 @@ def checkOutputs(tests):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--system','-s', help='Name of the model (By default all are run)')
+    parser.add_argument('--disable-cuda', action='store_true', help='Disable CUDA')
     args = parser.parse_args()
 
     tests = []
@@ -88,9 +93,14 @@ def main():
                 # Exclude hidden files
                 if not name.startswith("."):
                     tests.append(os.path.join(path,name))
+
+    useCUDA = not args.disable_cuda
+    if not useCUDA:
+        tests = list(filter(lambda f: not "_CUDA" in open(f,"r").read(), tests))
+
     tests = [ os.path.splitext(os.path.relpath(test,"validationSettings"))[0] for test in tests]
 
-    runTests(tests)
+    runTests(tests,useCUDA=useCUDA)
 
     if checkOutputs(tests):
         print("*** No errors detected")

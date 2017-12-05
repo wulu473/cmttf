@@ -2,22 +2,22 @@
 #include <boost/test/unit_test.hpp>
 #include <Eigen/Dense>
 
-#include "NewtonRaphson.hpp"
+#include "NewtonRaphson_CUDA.hpp"
 
 #ifdef DISABLE_CUDA
 #warning CUDA is diabled. No Newton Raphson tests are run.
 #else
 
-BOOST_AUTO_TEST_SUITE(NewtonRaphsonTests)
+BOOST_AUTO_TEST_SUITE(NewtonRaphson_CUDATests)
 
-void f(const NewtonRaphson::EVector& x, NewtonRaphson::EVector& f)
+void f(const NewtonRaphson_CUDA::EVector& x, NewtonRaphson_CUDA::EVector& f)
 {
   f[0] = 3*x[0] - cos(x[1]*x[2]) - 3./2.;
   f[1] = 4*x[0]*x[0] - 625*x[1]*x[1] + 2*x[2] - 1;
   f[2] = 20*x[2] + exp(-x[0]*x[1]) + 9;
 }
 
-void J(const NewtonRaphson::EVector& x, NewtonRaphson::ESpMatRowMaj& J)
+void J(const NewtonRaphson_CUDA::EVector& x, NewtonRaphson_CUDA::ESpMatRowMaj& J)
 {
   // In this case J isn't sparse but it's just for testing purposes
   typedef Eigen::Triplet<real> T;
@@ -40,14 +40,14 @@ void J(const NewtonRaphson::EVector& x, NewtonRaphson::ESpMatRowMaj& J)
 
 BOOST_AUTO_TEST_CASE(test1)
 {
-  std::function<void(const NewtonRaphson::EVector&, NewtonRaphson::EVector&)> fun = f;
-  std::function<void(const NewtonRaphson::EVector&, NewtonRaphson::ESpMatRowMaj&)> jac = J;
-  NewtonRaphson::EVector x(3);
+  std::function<void(const NewtonRaphson_CUDA::EVector&, NewtonRaphson_CUDA::EVector&)> fun = f;
+  std::function<void(const NewtonRaphson_CUDA::EVector&, NewtonRaphson_CUDA::ESpMatRowMaj&)> jac = J;
+  NewtonRaphson_CUDA::EVector x(3);
 
   // Guess solution
   x << 1., 1., 1.;
 
-  NewtonRaphson *method = new NewtonRaphson();
+  NewtonRaphson_CUDA *method = new NewtonRaphson_CUDA();
 
   method->solveSparse(fun,jac,x);
 
@@ -62,14 +62,14 @@ BOOST_AUTO_TEST_CASE(linear)
 {
   // Linear case
 
-  std::function<void(const NewtonRaphson::EVector&, NewtonRaphson::EVector&)> fun = 
-    [](const NewtonRaphson::EVector& x, NewtonRaphson::EVector& f)
+  std::function<void(const NewtonRaphson_CUDA::EVector&, NewtonRaphson_CUDA::EVector&)> fun = 
+    [](const NewtonRaphson_CUDA::EVector& x, NewtonRaphson_CUDA::EVector& f)
     {
       f[0] = 1.2*x[0] + 0.8*x[1] - 0.2;
       f[1] = 1.1*x[0] + 1.3*x[1] + 0.3;
     };
-  std::function<void(const NewtonRaphson::EVector&, NewtonRaphson::ESpMatRowMaj&)> jac =
-    [](const NewtonRaphson::EVector& /*x*/, NewtonRaphson::ESpMatRowMaj& J)
+  std::function<void(const NewtonRaphson_CUDA::EVector&, NewtonRaphson_CUDA::ESpMatRowMaj&)> jac =
+    [](const NewtonRaphson_CUDA::EVector& /*x*/, NewtonRaphson_CUDA::ESpMatRowMaj& J)
     {
       typedef Eigen::Triplet<real> T;
       std::vector<T> coeffs;
@@ -78,12 +78,12 @@ BOOST_AUTO_TEST_CASE(linear)
       J.setFromTriplets(coeffs.begin(),coeffs.end());
       J.makeCompressed();
     };
-  NewtonRaphson::EVector x(2);
+  NewtonRaphson_CUDA::EVector x(2);
 
   // Should always converge
   x << -100, -100;
 
-  NewtonRaphson *method = new NewtonRaphson();
+  NewtonRaphson_CUDA *method = new NewtonRaphson_CUDA();
 
   method->solveSparse(fun,jac,x);
 

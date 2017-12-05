@@ -1,16 +1,16 @@
 
-#ifndef NEWTONRAPHSON_H_
-#define NEWTONRAPHSON_H_
+#ifndef NEWTONRAPHSONCUDA_H_
+#define NEWTONRAPHSONCUDA_H_
 
 #include "RootFinder.hpp"
 
-class NewtonRaphson : public RootFinder
+class NewtonRaphson_CUDA : public RootFinder
 {
-  REGISTER(NewtonRaphson)
+  REGISTER(NewtonRaphson_CUDA)
   public:
     virtual std::string moduleName() const;
-    NewtonRaphson() {}
-    virtual ~NewtonRaphson() {}
+    NewtonRaphson_CUDA() {}
+    virtual ~NewtonRaphson_CUDA() {}
 
     virtual void solveSparse(const std::function<void(const EVector&, EVector&)>& f, 
         const std::function<void(const EVector&, ESpMatRowMaj&)>& J, EVector& x,
