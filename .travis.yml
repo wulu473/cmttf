@@ -1,11 +1,10 @@
 sudo: required
 
 install:
-  - sudo apt-get install libconfig++-dev
+  - sudo apt-get install libconfig++-dev libboost-all-dev
   - source travis-scripts/install-cuda-trusty.sh
   - source travis-scripts/install-exprtk.sh
   - source travis-scripts/install-eigen.sh
-  - source travis-scripts/install-boost.sh
   - touch githash.h
 
 # Enable C++ support
