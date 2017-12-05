@@ -11,6 +11,10 @@ struct LogSetup
 {
   LogSetup()
   {
+    // This is not a very portable way of setting the log level. 
+    // It doesn't compile on many boost versions
+    // TODO Implement a more robust way of setting the log level
+    /*
     if(boost::unit_test::runtime_config::get<boost::unit_test::log_level>( 
           boost::unit_test::runtime_config::LOG_LEVEL 
           ) <= boost::unit_test::log_messages)
@@ -21,6 +25,7 @@ struct LogSetup
     {
       Log::setLevel(Log::Level::error);
     }
+    */
   }
   ~LogSetup() { }
 };
