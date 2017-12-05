@@ -1,6 +1,7 @@
 sudo: required
 
 install:
+  - sudo pip install filelock
   - sudo apt-get install libconfig++-dev libboost-all-dev
   - source travis-scripts/install-cuda-trusty.sh
   - source travis-scripts/install-exprtk.sh

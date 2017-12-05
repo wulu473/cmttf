@@ -5,7 +5,6 @@
 #include "Attributes.hpp"
 
 #include <boost/test/unit_test.hpp>
-#include <boost/test/unit_test_parameters.hpp>
 
 struct LogSetup
 {
