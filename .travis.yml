@@ -17,7 +17,8 @@ compiler:
 
 # Build steps
 script:
-  - make -f travis.make SYSTEM=roberts test
+  - make -f travis.make SYSTEM=roberts unit-tests
+  - make -f travis.make SYSTEM=roberts regression-tests
     #  - make -f travis.make SYSTEM=myers
     #  - make -f travis.make SYSTEM=roberts unit-tests
 #  - make -f travis.make SYSTEM=myers unit-tests
