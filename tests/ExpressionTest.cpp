@@ -38,6 +38,8 @@ BOOST_AUTO_TEST_CASE(setData)
   BOOST_CHECK_CLOSE((*data)(2,1),2,1e-5);
   BOOST_CHECK_CLOSE((*data)(4,0),1,1e-5);
   BOOST_CHECK_CLOSE((*data)(4,1),2,1e-5);
+
+  ModuleList::clear();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
