@@ -85,7 +85,9 @@ def main():
     for path, subdirs, files in os.walk("validationSettings"):
         if not args.system or args.system in path:
             for name in files:
-                tests.append(os.path.join(path,name))
+                # Exclude hidden files
+                if not name.startswith("."):
+                    tests.append(os.path.join(path,name))
     tests = [ os.path.splitext(os.path.relpath(test,"validationSettings"))[0] for test in tests]
 
     runTests(tests)
