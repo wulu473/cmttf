@@ -14,6 +14,7 @@ INCLUDES=-isystem=/usr/local/include/eigen3 -isystem=$(CUDA_PATH)/samples/common
 LDFLAGS=
 
 CXXFLAGS+= -DDISABLE_CUDA
+CXXFLAGS_DEBUG+= -DDISABLE_CUDA
 
 -include common.make
 
